@@ -2,12 +2,14 @@ package com.pedro.budget.controller;
 
 import com.pedro.budget.dto.TransactionRequest;
 import com.pedro.budget.dto.TransactionResponse;
+import com.pedro.budget.dto.validation.OnCreate;
 import com.pedro.budget.service.TransactionService;
 
 import jakarta.validation.Valid;
 
 import java.util.List;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +26,7 @@ public class TransactionController {
     }
 
     @PostMapping("/")
-    public TransactionResponse createTransaction(@Valid @RequestBody TransactionRequest request) {
+    public TransactionResponse createTransaction(@Validated(OnCreate.class) @RequestBody TransactionRequest request) {
         return transactionService.createTransaction(request);
     }
 
