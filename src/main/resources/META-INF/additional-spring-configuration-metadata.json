@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "api.admin.username",
+      "type": "java.lang.String",
+      "description": "A description for 'api.admin.username'"
+    },
+    {
+      "name": "api.admin.password",
+      "type": "java.lang.String",
+      "description": "A description for 'api.admin.password'"
+    },
+    {
+      "name": "api.security.token.secret",
+      "type": "java.lang.String",
+      "description": "A description for 'api.security.token.secret'"
+    }
+  ]
+}
