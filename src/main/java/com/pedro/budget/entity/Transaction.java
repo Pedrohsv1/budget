@@ -17,7 +17,7 @@ import jakarta.validation.constraints.Past;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "transactions")
 @Table(name = "transactions")
 @Data
 @NoArgsConstructor
