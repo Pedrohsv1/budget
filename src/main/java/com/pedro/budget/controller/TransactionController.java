@@ -5,8 +5,6 @@ import com.pedro.budget.dto.TransactionResponse;
 import com.pedro.budget.dto.validation.OnCreate;
 import com.pedro.budget.service.TransactionService;
 
-import jakarta.validation.Valid;
-
 import java.util.List;
 
 import org.springframework.validation.annotation.Validated;
