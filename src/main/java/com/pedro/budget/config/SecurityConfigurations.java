@@ -11,10 +11,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+@AllArgsConstructor
+public class SecurityConfigurations {
+    private final SecurityFilter securityFilter;
 
     private static final String[] SWAGGER_LIST = {
             "/v3/api-docs",
@@ -42,7 +47,8 @@ public class WebSecurityConfig {
                                 AUTH_LIST)
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/transactions").hasRole("ADMIN")
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated())
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
