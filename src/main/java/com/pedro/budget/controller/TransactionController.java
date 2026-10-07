@@ -3,10 +3,12 @@ package com.pedro.budget.controller;
 import com.pedro.budget.dto.TransactionRequest;
 import com.pedro.budget.dto.TransactionResponse;
 import com.pedro.budget.dto.validation.OnCreate;
+import com.pedro.budget.entity.User;
 import com.pedro.budget.service.TransactionService;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +26,14 @@ public class TransactionController {
     }
 
     @PostMapping("/")
-    public TransactionResponse createTransaction(@Validated(OnCreate.class) @RequestBody TransactionRequest request) {
-        return transactionService.createTransaction(request);
+    public TransactionResponse createTransaction(@Validated(OnCreate.class) @RequestBody TransactionRequest request,
+            @AuthenticationPrincipal User user) {
+        return transactionService.createTransaction(request, user);
     }
 
     @GetMapping("/")
-    public List<TransactionResponse> listTransactions() {
-        return transactionService.listTransactions();
+    public List<TransactionResponse> listTransactions(@AuthenticationPrincipal User user) {
+        return transactionService.listTransactions(user);
     }
 
 }

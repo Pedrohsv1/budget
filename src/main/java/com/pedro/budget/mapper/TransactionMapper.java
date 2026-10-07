@@ -9,11 +9,12 @@ import org.springframework.stereotype.Component;
 import com.pedro.budget.dto.TransactionRequest;
 import com.pedro.budget.dto.TransactionResponse;
 import com.pedro.budget.entity.Transaction;
+import com.pedro.budget.entity.User;
 
 @Component
 public class TransactionMapper {
-    public Transaction toTransaction(TransactionRequest request) {
-        return new Transaction(request.getAmount(), request.getDescription(), request.getDate());
+    public Transaction toTransaction(TransactionRequest request, User user) {
+        return new Transaction(request.getAmount(), request.getDescription(), request.getDate(), user);
     }
 
     public TransactionResponse toResponse(Transaction entity) {

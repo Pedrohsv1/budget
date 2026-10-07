@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -15,11 +17,15 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "transactions")
 @Table(name = "transactions")
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Transaction {
     @Id
@@ -38,11 +44,17 @@ public class Transaction {
     @Past()
     private LocalDateTime date;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @NotNull
+    User user;
+
     // Function for creating a new transaction
 
-    public Transaction(BigDecimal amount, String description, LocalDateTime date) {
+    public Transaction(BigDecimal amount, String description, LocalDateTime date, User user) {
         this.amount = amount;
         this.description = description;
         this.date = date;
+        this.user = user;
     }
 }
