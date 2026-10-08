@@ -24,12 +24,12 @@ public class AuthenticationController {
         this.authorizationService = authorizationService;
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/sign-up")
     public ResponseEntity<SignResponse> signUp(@RequestBody @Valid SignUpRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authorizationService.signUp(request));
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/sign-in")
     public ResponseEntity<SignResponse> signIn(@RequestBody @Valid SignInRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(authorizationService.signIn(request));
     }

@@ -8,17 +8,19 @@ import org.springframework.stereotype.Component;
 
 import com.pedro.budget.dto.TransactionRequest;
 import com.pedro.budget.dto.TransactionResponse;
+import com.pedro.budget.entity.Category;
 import com.pedro.budget.entity.Transaction;
 import com.pedro.budget.entity.User;
 
 @Component
 public class TransactionMapper {
-    public Transaction toTransaction(TransactionRequest request, User user) {
-        return new Transaction(request.getAmount(), request.getDescription(), request.getDate(), user);
+    public Transaction toTransaction(TransactionRequest request, User user, Category category) {
+        return new Transaction(request.getAmount(), request.getDescription(), request.getDate(), user, category);
     }
 
     public TransactionResponse toResponse(Transaction entity) {
-        return new TransactionResponse(entity.getId(), entity.getAmount(), entity.getDescription(), entity.getDate());
+        return new TransactionResponse(entity.getId(), entity.getAmount(), entity.getDescription(), entity.getDate(),
+                entity.getCategory());
     }
 
     public List<TransactionResponse> toResponseList(List<Transaction> entities) {

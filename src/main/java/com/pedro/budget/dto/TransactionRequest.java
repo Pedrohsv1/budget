@@ -2,6 +2,7 @@ package com.pedro.budget.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -26,4 +27,7 @@ public class TransactionRequest {
     @NotNull(message = "Date cannot be null", groups = { OnCreate.class })
     @Past(message = "Date must be in the past", groups = { OnCreate.class, OnUpdate.class })
     LocalDateTime date;
+
+    @NotNull(message = "Date cannot be null", groups = { OnCreate.class })
+    UUID categoryId;
 }

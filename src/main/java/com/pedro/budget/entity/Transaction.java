@@ -16,6 +16,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -45,16 +47,20 @@ public class Transaction {
     private LocalDateTime date;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @NotNull
     User user;
 
-    // Function for creating a new transaction
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @NotNull
+    Category category;
 
-    public Transaction(BigDecimal amount, String description, LocalDateTime date, User user) {
+    public Transaction(BigDecimal amount, String description, LocalDateTime date, User user, Category category) {
         this.amount = amount;
         this.description = description;
         this.date = date;
         this.user = user;
+        this.category = category;
     }
 }

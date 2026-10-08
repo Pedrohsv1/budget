@@ -14,20 +14,15 @@ import com.pedro.budget.entity.User;
 import com.pedro.budget.mapper.SignMapper;
 import com.pedro.budget.repository.UserRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager; // Pedrohsv1: Cycle autowired when UserDetails is
     private final SignMapper signInMapper;
-
-    public AuthService(UserRepository userRepository, TokenService tokenService,
-            AuthenticationManager authenticationManager, SignMapper signInMapper) {
-        this.userRepository = userRepository;
-        this.tokenService = tokenService;
-        this.authenticationManager = authenticationManager;
-        this.signInMapper = signInMapper;
-    }
 
     public SignResponse signUp(SignUpRequest request) {
         if (userRepository.findByUsername(request.getUsername()) != null) {
