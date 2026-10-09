@@ -14,6 +14,7 @@ import com.pedro.budget.entity.User;
 import com.pedro.budget.mapper.SignMapper;
 import com.pedro.budget.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -21,9 +22,11 @@ import lombok.AllArgsConstructor;
 public class AuthService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final CategoryService categoryService;
     private final AuthenticationManager authenticationManager; // Pedrohsv1: Cycle autowired when UserDetails is
     private final SignMapper signInMapper;
 
+    @Transactional
     public SignResponse signUp(SignUpRequest request) {
         if (userRepository.findByUsername(request.getUsername()) != null) {
             throw new InvalidParameterException("This username is already used by a user");
@@ -32,6 +35,9 @@ public class AuthService {
         String hashedPassword = new BCryptPasswordEncoder().encode(request.getPassword());
 
         User user = userRepository.save(signInMapper.toUser(request, hashedPassword));
+
+        categoryService.createDefaultCategories(user); // Pedrohsv1: Create default categories for the new user
+
         return signInMapper.toResponse(tokenService.generateToken(user), user);
     }
 
