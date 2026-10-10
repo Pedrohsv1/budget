@@ -1,22 +1,35 @@
 package com.pedro.budget.dto;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import com.pedro.budget.entity.Category;
+import com.pedro.budget.entity.Transaction.Installment;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Value
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
 public class TransactionResponse {
     private UUID id;
 
-    private BigDecimal amount;
+    private Integer amount;
 
     private String description;
 
     private LocalDateTime date;
 
     private Category category;
+
+    private List<Installment> installments;
+
+    private Integer countInstallments;
+
+    String transactionType;
 }
