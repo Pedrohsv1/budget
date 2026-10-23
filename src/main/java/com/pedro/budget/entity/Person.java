@@ -20,8 +20,7 @@ import lombok.Setter;
 @Table
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,6 +31,11 @@ public class Person {
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @JsonIgnore
     private User user;
+
+    public Person(String name, String email, User user) {
+        this.name = name;
+        this.email = email;
+        this.user = user;
+    }
 }

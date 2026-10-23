@@ -9,9 +9,8 @@ import org.springframework.stereotype.Service;
 import com.pedro.budget.dto.CategoryRequest;
 import com.pedro.budget.dto.CategoryResponse;
 import com.pedro.budget.entity.Category;
-import com.pedro.budget.entity.CategoryType;
 import com.pedro.budget.entity.User;
-import com.pedro.budget.mapper.CategoryMapper;
+import com.pedro.budget.enums.CategoryType;
 import com.pedro.budget.repository.CategoryRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -21,14 +20,15 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
 
     public CategoryResponse createCategory(CategoryRequest request, User user) {
-        if (categoryRepository.existsByTitleAndUserId(request.getTitle(), user.getId())) {
+        if (categoryRepository.existsByTitleAndUserId(request.title(), user.getId())) {
             throw new IllegalArgumentException("Category title must be unique");
         }
 
-        return categoryMapper.toResponse(categoryRepository.save(categoryMapper.toEntity(request, user)));
+        Category category = categoryRepository.save(request.toEntity(user));
+
+        return CategoryResponse.from(category.getId(), category.getTitle(), category.getType());
     }
 
     public void deleteCategory(UUID id, User user) {
@@ -41,7 +41,7 @@ public class CategoryService {
     public List<CategoryResponse> listCategories(User user) {
         List<Category> categories = categoryRepository.findAllByUser(user);
 
-        return categoryMapper.toResponseList(categories);
+        return CategoryResponse.fromList(categories);
     }
 
     public Void createDefaultCategories(User user) {

@@ -13,14 +13,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "users")
+@Entity
 @Table(name = "users")
-@Data
-@NoArgsConstructor
+@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@Getter
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
     @Id
@@ -33,12 +33,6 @@ public class User implements UserDetails {
 
     private UserRole role;
 
-    public User(String username, String password, UserRole role) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (role == UserRole.ADMIN)
@@ -47,8 +41,9 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority("USER"));
     }
 
-    @Override
-    public String getUsername() {
-        return username;
+    public User(String username, String password, UserRole role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
     }
 }

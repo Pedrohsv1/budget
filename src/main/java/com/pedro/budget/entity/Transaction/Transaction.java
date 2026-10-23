@@ -1,14 +1,19 @@
 package com.pedro.budget.entity.Transaction;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
+import com.pedro.budget.entity.BankAccount;
 import com.pedro.budget.entity.Category;
 import com.pedro.budget.entity.User;
+import com.pedro.budget.enums.TransactionType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,51 +22,63 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Entity(name = "transactions")
+@Entity
 @Table(name = "transactions")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
-@Data
+@DiscriminatorColumn(name = "kind")
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Transaction {
+public abstract class Transaction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "type", insertable = false, updatable = false)
-    private String transactionType;
+    @NotNull
+    @Positive
+    @Column(nullable = false)
+    private Long amount; // Amount in cents to avoid floating point issues
 
-    @NotNull(message = "Amount cannot be null")
-    @Min(value = 0, message = "Amount cannot be less than zero")
-    private Integer amount;
-
-    @NotEmpty(message = "Description cannot be empty")
+    @NotBlank
+    @Column(nullable = false)
     private String description;
 
-    @NotNull(message = "Date cannot be null")
-    @Past()
-    private LocalDateTime date;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @NotNull
-    User user;
+    @Column(nullable = false)
+    private LocalDate date;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
     @NotNull
-    Category category;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "bank_account_id", nullable = false)
+    private BankAccount bankAccount;
+
+    protected Transaction(Long amount, String description,
+            LocalDate date, User user, Category category, TransactionType transactionType, BankAccount bankAccount) {
+        this.amount = amount;
+        this.description = description;
+        this.date = date;
+        this.user = user;
+        this.category = category;
+        this.transactionType = transactionType;
+        this.bankAccount = bankAccount;
+    }
+
+    protected Transaction() {
+    }
 }

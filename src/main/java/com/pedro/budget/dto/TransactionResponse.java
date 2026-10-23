@@ -1,35 +1,57 @@
 package com.pedro.budget.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.UUID;
 
+import com.pedro.budget.entity.BankAccount;
 import com.pedro.budget.entity.Category;
-import com.pedro.budget.entity.Transaction.Installment;
+import com.pedro.budget.entity.CreditPurchase;
+import com.pedro.budget.entity.Transaction.Transaction;
+import com.pedro.budget.entity.Transaction.TransactionCredit;
+import com.pedro.budget.entity.Transaction.TransactionExpense;
+import com.pedro.budget.entity.Transaction.TransactionIncome;
+import com.pedro.budget.enums.ExpenseType;
+import com.pedro.budget.enums.IncomeType;
+import com.pedro.budget.enums.TransactionType;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
-@Getter
-public class TransactionResponse {
-    private UUID id;
+@Builder
+public record TransactionResponse(
+        UUID id,
+        Long amount,
+        String description,
+        LocalDate date,
+        Category category,
+        IncomeType incomeType,
+        ExpenseType expenseType,
+        CreditPurchase creditPurchase,
+        BankAccount bankAccount,
+        TransactionType type) {
+    public static TransactionResponse from(Transaction t) {
+        TransactionResponse.TransactionResponseBuilder builder = TransactionResponse.builder()
+                .id(t.getId())
+                .amount(t.getAmount())
+                .description(t.getDescription())
+                .date(t.getDate())
+                .category(t.getCategory())
+                .type(t.getTransactionType())
+                .bankAccount(t.getBankAccount());
 
-    private Integer amount;
+        return switch (t) {
+            case TransactionIncome income -> builder
+                    .incomeType(income.getIncomeType())
+                    .build();
 
-    private String description;
+            case TransactionExpense expense -> builder
+                    .expenseType(expense.getExpenseType())
+                    .build();
 
-    private LocalDateTime date;
+            case TransactionCredit credit -> builder
+                    .creditPurchase(credit.getPurchase())
+                    .build();
 
-    private Category category;
-
-    private List<Installment> installments;
-
-    private Integer countInstallments;
-
-    String transactionType;
+            default -> builder.build();
+        };
+    }
 }

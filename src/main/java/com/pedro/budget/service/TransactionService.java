@@ -8,15 +8,17 @@ import org.springframework.stereotype.Service;
 
 import com.pedro.budget.dto.TransactionRequest;
 import com.pedro.budget.dto.TransactionResponse;
+import com.pedro.budget.entity.BankAccount;
 import com.pedro.budget.entity.Category;
+import com.pedro.budget.entity.CreditPurchase;
 import com.pedro.budget.entity.User;
-import com.pedro.budget.entity.Transaction.Installment;
+import com.pedro.budget.entity.Transaction.Transaction;
 import com.pedro.budget.entity.Transaction.TransactionCredit;
-import com.pedro.budget.entity.Transaction.TransactionDebit;
-import com.pedro.budget.mapper.TransactionMapper;
+import com.pedro.budget.entity.Transaction.TransactionExpense;
+import com.pedro.budget.entity.Transaction.TransactionIncome;
 import com.pedro.budget.repository.CategoryRepository;
 import com.pedro.budget.repository.Transaction.TransactionCreditRepository;
-import com.pedro.budget.repository.Transaction.TransactionDebitRepository;
+import com.pedro.budget.repository.Transaction.TransactionExpenseRepository;
 import com.pedro.budget.repository.Transaction.TransactionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -27,66 +29,94 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class TransactionService {
     private final TransactionRepository transactionRepository;
-    private final TransactionDebitRepository transactionDebitRepository;
+    private final TransactionExpenseRepository transactionExpenseRepository;
     private final TransactionCreditRepository transactionCreditRepository;
     private final CategoryRepository categoryRepository;
-    private final TransactionMapper transactionMapper;
 
     @Transactional
     public TransactionResponse createTransaction(TransactionRequest request, User user) {
         Category category = categoryRepository
-                .findByIdAndUserId(request.getCategoryId(), user.getId())
+                .findByIdAndUserId(request.categoryId(), user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find category"));
 
-        switch (request.getType().getTransactionType()) {
-            case "Credit":
-                TransactionCredit newTransactionCredit = transactionMapper.toTransactionCredit(request, user, category);
+        BankAccount bankAccount = null;
 
-                List<Installment> installments = generateInstallments(newTransactionCredit, user);
-                newTransactionCredit.setInstallments(installments);
+        switch (request.type()) {
+            case INCOME:
+                if (request.incomeType() == null) {
+                    throw new InvalidParameterException("Income type is required");
+                }
 
-                TransactionCredit transactionCredit = transactionCreditRepository.save(newTransactionCredit);
+                TransactionIncome transactionIncome = new TransactionIncome(request.amount(), request.description(),
+                        request.date(), user, category, request.incomeType(), bankAccount);
 
-                return transactionMapper.toResponseCredit(transactionCredit);
-            case "Debit":
-                TransactionDebit transactionDebit = transactionDebitRepository
-                        .save(transactionMapper.toTransactionDebit(request, user, category));
+                TransactionIncome savedTransactionIncome = transactionRepository.save(transactionIncome);
 
-                return transactionMapper.toResponseDebit(transactionDebit);
+                return TransactionResponse.from(savedTransactionIncome);
+            case EXPENSE:
+                if (request.expenseType() == null) {
+                    throw new InvalidParameterException("Expense type is required");
+                }
+
+                TransactionExpense transactionExpense = new TransactionExpense(request.amount(), request.description(),
+                        request.date(), user, category, request.expenseType(), bankAccount);
+
+                TransactionExpense savedTransactionExpense = transactionExpenseRepository.save(transactionExpense);
+
+                return TransactionResponse.from(savedTransactionExpense);
+            case CREDIT_EXPENSE:
+                if (request.installmentNumber() == null || request.installmentTotal() == null) {
+                    throw new InvalidParameterException("Installment number and total are required");
+                }
+
+                if (request.cardId() == null) {
+                    throw new InvalidParameterException("Card ID is required");
+                }
+
+                CreditPurchase creditPurchase = new CreditPurchase(null, request.installmentTotal());
+
+                var amount = request.amount();
+                var cents = amount / request.installmentTotal();
+
+                for (int i = 1; i <= request.installmentTotal(); i++) {
+                    TransactionCredit transactionCredit = new TransactionCredit(
+                            i == request.installmentTotal() ? amount : cents,
+                            request.description(),
+                            request.date().plusMonths(i - 1),
+                            user,
+                            category,
+                            creditPurchase,
+                            i,
+                            request.installmentTotal(),
+                            bankAccount);
+                    transactionCreditRepository.save(transactionCredit);
+                    amount -= cents;
+
+                    if (i == request.installmentTotal()) {
+                        return TransactionResponse.from(transactionCredit); // Pedrohsv1: Return the first installment
+                    }
+                }
+
+                throw new InvalidParameterException("Cannot create credit transaction");
             default:
                 throw new InvalidParameterException("Cannot get this type");
         }
     }
 
     public List<TransactionResponse> listTransactions(User user) {
-        return transactionMapper.toResponseList(transactionRepository.findAllByUserId(user.getId()));
-    }
+        List<TransactionResponse> transactionResponses = new ArrayList<>();
 
-    public List<Installment> generateInstallments(TransactionCredit transactionCredit, User user) {
-        Integer amount = transactionCredit.getAmount();
-        Integer cents = transactionCredit.getAmount() / transactionCredit.getCountInstallments();
-
-        List<Installment> installments = new ArrayList<>();
-
-        for (int i = 1; i <= transactionCredit.getCountInstallments(); i++) {
-            Installment installment = new Installment();
-
-            if (i == transactionCredit.getCountInstallments()) {
-                installment.setAmountCents(amount);
-            } else {
-                installment.setAmountCents(cents);
-
-            }
-            amount -= cents;
-
-            installment.setDateTime(transactionCredit.getDate().plusMonths(i - 1));
-            installment.setNumber(i);
-            installment.setTransaction(transactionCredit);
-            installment.setUser(user);
-
-            installments.add(installment);
+        for (Transaction transaction : transactionRepository.findAllByUserId(user.getId())) {
+            transactionResponses.add(TransactionResponse.from(transaction));
         }
 
-        return installments;
+        return transactionResponses;
+    }
+
+    public void deleteTransaction(User user, java.util.UUID transactionId) {
+        Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find transaction"));
+
+        transactionRepository.delete(transaction);
     }
 }

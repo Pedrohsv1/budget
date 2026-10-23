@@ -1,0 +1,192 @@
+{
+  "info": {
+    "_postman_id": "budget-api-collection",
+    "name": "Budget API",
+    "description": "Collection de testes para o Budget API - Autenticação, Transações (INCOME, EXPENSE, CREDIT_EXPENSE) e Listagem.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string"
+    },
+    {
+      "key": "bankAccountId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string"
+    },
+    {
+      "key": "cardId",
+      "value": "00000000-0000-0000-0000-000000000000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Auth - Sign In (Login)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.token) {",
+              "    pm.collectionVariables.set('token', jsonData.token);",
+              "    console.log('Token JWT capturado com sucesso!');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"seu_usuario\",\n    \"password\": \"sua_senha123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/sign-in",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "sign-in"]
+        }
+      }
+    },
+    {
+      "name": "2. Transactions - Criar Receita (INCOME)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"amount\": 150000,\n    \"description\": \"Salário mensal\",\n    \"date\": \"2026-10-23\",\n    \"categoryId\": \"{{categoryId}}\",\n    \"bankAccountId\": \"{{bankAccountId}}\",\n    \"type\": \"INCOME\",\n    \"incomeType\": \"TED\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/transactions",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions"]
+        },
+        "description": "Regras INCOME:\n- type: 'INCOME'\n- incomeType: obrigatório ('PIX', 'INVESTMENTS', 'TED')\n- amount: valor em centavos (> 0)"
+      }
+    },
+    {
+      "name": "3. Transactions - Criar Despesa Direta (EXPENSE)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"amount\": 4500,\n    \"description\": \"Almoço Restaurante\",\n    \"date\": \"2026-10-23\",\n    \"categoryId\": \"{{categoryId}}\",\n    \"bankAccountId\": \"{{bankAccountId}}\",\n    \"type\": \"EXPENSE\",\n    \"expenseType\": \"PIX\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/transactions",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions"]
+        },
+        "description": "Regras EXPENSE:\n- type: 'EXPENSE'\n- expenseType: obrigatório ('PIX', 'BOLETO', 'TED')\n- amount: valor em centavos (> 0)"
+      }
+    },
+    {
+      "name": "4. Transactions - Criar Despesa Cartão (CREDIT_EXPENSE)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"amount\": 120000,\n    \"description\": \"Compra Notebook\",\n    \"date\": \"2026-10-23\",\n    \"categoryId\": \"{{categoryId}}\",\n    \"bankAccountId\": \"{{bankAccountId}}\",\n    \"type\": \"CREDIT_EXPENSE\",\n    \"installmentNumber\": 1,\n    \"installmentTotal\": 6,\n    \"cardId\": \"{{cardId}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/transactions",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions"]
+        },
+        "description": "Regras CREDIT_EXPENSE:\n- type: 'CREDIT_EXPENSE'\n- installmentNumber: obrigatório (número da parcela atual)\n- installmentTotal: obrigatório (total de parcelas)\n- cardId: obrigatório (UUID do cartão cadastrado)"
+      }
+    },
+    {
+      "name": "5. Transactions - Listar Transações",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/transactions",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions"]
+        },
+        "description": "Lista todas as transações cadastradas pertencentes ao usuário logado."
+      }
+    }
+  ]
+}

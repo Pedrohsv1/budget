@@ -1,4 +1,4 @@
-package com.pedro.budget.entity;
+package com.pedro.budget.enums;
 
 public enum CategoryType {
     FOOD("Food"),

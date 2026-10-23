@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import com.pedro.budget.dto.SignUpRequest;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.entity.UserRole;
-import com.pedro.budget.mapper.SignMapper;
 import com.pedro.budget.repository.UserRepository;
 
 @Component
@@ -21,11 +20,9 @@ public class AdminSeed implements ApplicationListener<ContextRefreshedEvent> {
     private String username;
 
     UserRepository userRepository;
-    SignMapper signMapper;
 
-    public AdminSeed(UserRepository userRepository, SignMapper signMapper) {
+    public AdminSeed(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.signMapper = signMapper;
     }
 
     private void createAdministrator() {
@@ -33,7 +30,7 @@ public class AdminSeed implements ApplicationListener<ContextRefreshedEvent> {
 
         String hashedPassword = new BCryptPasswordEncoder().encode(password);
 
-        userRepository.save(new User(request.getUsername(), hashedPassword, UserRole.ADMIN));
+        userRepository.save(new User(request.username(), hashedPassword, UserRole.ADMIN));
     }
 
     @Override
