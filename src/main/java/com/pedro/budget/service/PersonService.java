@@ -1,5 +1,7 @@
 package com.pedro.budget.service;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,10 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     public PersonResponse createPerson(PersonRequest request, User user) {
+        if (personRepository.findByNameAndUserId(request.name(), user.getId()).isPresent()) {
+            throw new RuntimeException("This name is already used by a person");
+        }
+
         Person person = personRepository.save(request.toEntity(user));
         return PersonResponse.from(person);
     }
@@ -27,18 +33,22 @@ public class PersonService {
                 .map(PersonResponse::from);
     }
 
-    public PersonResponse updatePerson(Long id, PersonRequest request, User user) {
+    public PersonResponse updatePerson(UUID id, PersonRequest request, User user) {
         Person person = personRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new RuntimeException("Person not found"));
-        person.setName(request.name());
-        person.setEmail(request.email());
+        person.update(request.name(), request.email());
         personRepository.save(person);
         return PersonResponse.from(person);
     }
 
-    public void deletePerson(Long id, User user) {
+    public void deletePerson(UUID id, User user) {
         Person person = personRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new RuntimeException("Person not found"));
         personRepository.delete(person);
+    }
+
+    public void createDefaultPerson(User user) {
+        Person defaultPerson = new Person("Me", user.getUsername(), user);
+        personRepository.save(defaultPerson);
     }
 }

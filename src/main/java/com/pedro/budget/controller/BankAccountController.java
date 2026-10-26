@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pedro.budget.dto.BankAccountReponse;
+import com.pedro.budget.dto.BankAccountResponse;
 import com.pedro.budget.dto.BankAccountRequest;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.service.BankAccountService;
@@ -31,13 +31,13 @@ public class BankAccountController {
     private final BankAccountService bankAccountService;
 
     @PostMapping()
-    public ResponseEntity<BankAccountReponse> createBankAccount(@RequestBody BankAccountRequest request,
+    public ResponseEntity<BankAccountResponse> createBankAccount(@RequestBody BankAccountRequest request,
             @AuthenticationPrincipal User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bankAccountService.createBankAccount(request, user));
     }
 
     @GetMapping("/search")
-    public Page<BankAccountReponse> listBankAccounts(@AuthenticationPrincipal User user,
+    public Page<BankAccountResponse> listBankAccounts(@AuthenticationPrincipal User user,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
@@ -45,7 +45,7 @@ public class BankAccountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BankAccountReponse> updateBankAccount(@RequestBody BankAccountRequest request,
+    public ResponseEntity<BankAccountResponse> updateBankAccount(@RequestBody BankAccountRequest request,
             @AuthenticationPrincipal User user, @PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.updateBankAccount(request, user, id));
     }

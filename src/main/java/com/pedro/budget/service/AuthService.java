@@ -22,7 +22,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final CategoryService categoryService;
-    private final AuthenticationManager authenticationManager; // Pedrohsv1: Cycle autowired when UserDetails is
+    private final AuthenticationManager authenticationManager; // Pedrohsv1: Cycle autowired when UserDetails
+    private final PersonService personService;
 
     @Transactional
     public SignResponse signUp(SignUpRequest request) {
@@ -35,6 +36,7 @@ public class AuthService {
         User user = userRepository.save(request.to(hashedPassword));
 
         categoryService.createDefaultCategories(user); // Pedrohsv1: Create default categories for the new user
+        personService.createDefaultPerson(user); // Pedrohsv1: Create default person for the new user
 
         return SignResponse.from(tokenService.generateToken(user), user.getUsername(), user.getRole());
     }

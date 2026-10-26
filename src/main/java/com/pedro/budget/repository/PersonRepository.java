@@ -10,7 +10,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.pedro.budget.entity.Person;
 
 public interface PersonRepository extends JpaRepository<Person, UUID> {
+    Optional<Person> findByNameAndUserId(String name, UUID userId);
+
     Page<Person> findByUserId(UUID userId, Pageable pageable);
 
-    Optional<Person> findByIdAndUserId(Long id, UUID userId);
+    Optional<Person> findByIdAndUserId(UUID id, UUID userId);
 }

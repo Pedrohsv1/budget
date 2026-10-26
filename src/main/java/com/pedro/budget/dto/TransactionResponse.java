@@ -22,11 +22,11 @@ public record TransactionResponse(
         Long amount,
         String description,
         LocalDate date,
-        Category category,
+        CategoryResponse category,
         IncomeType incomeType,
         ExpenseType expenseType,
-        CreditPurchase creditPurchase,
-        BankAccount bankAccount,
+        CreditPurchaseResponse creditPurchase,
+        BankAccountResponse bankAccount,
         TransactionType type) {
     public static TransactionResponse from(Transaction t) {
         TransactionResponse.TransactionResponseBuilder builder = TransactionResponse.builder()
@@ -34,9 +34,9 @@ public record TransactionResponse(
                 .amount(t.getAmount())
                 .description(t.getDescription())
                 .date(t.getDate())
-                .category(t.getCategory())
+                .category(CategoryResponse.from(t.getCategory()))
                 .type(t.getTransactionType())
-                .bankAccount(t.getBankAccount());
+                .bankAccount(BankAccountResponse.from(t.getBankAccount()));
 
         return switch (t) {
             case TransactionIncome income -> builder
@@ -48,7 +48,7 @@ public record TransactionResponse(
                     .build();
 
             case TransactionCredit credit -> builder
-                    .creditPurchase(credit.getPurchase())
+                    .creditPurchase(CreditPurchaseResponse.from(credit.getPurchase()))
                     .build();
 
             default -> builder.build();

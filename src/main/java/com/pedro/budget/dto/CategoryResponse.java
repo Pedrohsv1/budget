@@ -10,8 +10,8 @@ public record CategoryResponse(
         UUID id,
         String title,
         CategoryType type) {
-    public static CategoryResponse from(UUID id, String title, CategoryType type) {
-        return new CategoryResponse(id, title, type);
+    public static CategoryResponse from(Category category) {
+        return new CategoryResponse(category.getId(), category.getTitle(), category.getType());
     }
 
     public static List<CategoryResponse> fromList(List<Category> categories) {

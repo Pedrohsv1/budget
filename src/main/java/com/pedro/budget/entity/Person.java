@@ -35,4 +35,14 @@ public class Person {
         this.email = email;
         this.user = user;
     }
+
+    public void update(String name, String email) {
+        if (name != null && !name.isBlank()) {
+            this.name = name;
+        }
+
+        if (email != null && !email.isBlank()) {
+            this.email = email;
+        }
+    }
 }

@@ -28,7 +28,7 @@ public class CategoryService {
 
         Category category = categoryRepository.save(request.toEntity(user));
 
-        return CategoryResponse.from(category.getId(), category.getTitle(), category.getType());
+        return CategoryResponse.from(category);
     }
 
     public void deleteCategory(UUID id, User user) {
@@ -42,13 +42,14 @@ public class CategoryService {
         Category category = categoryRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find category"));
 
-        if (categoryRepository.existsByTitleAndUserId(request.title(), user.getId())) {
+        if (category.getTitle() != request.title()
+                && categoryRepository.existsByTitleAndUserId(request.title(), user.getId())) {
             throw new IllegalArgumentException("Category title must be unique");
         }
 
         category.update(request.title(), request.type());
 
-        return CategoryResponse.from(category.getId(), category.getTitle(), category.getType());
+        return CategoryResponse.from(category);
     }
 
     public List<CategoryResponse> listCategories(User user) {

@@ -6,19 +6,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pedro.budget.dto.PersonRequest;
 import com.pedro.budget.dto.PersonResponse;
+import com.pedro.budget.dto.validation.OnCreate;
+import com.pedro.budget.dto.validation.OnUpdate;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.service.PersonService;
 
 import lombok.AllArgsConstructor;
+
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/persons")
@@ -27,7 +35,7 @@ public class PersonController {
     private final PersonService personService;
 
     @PostMapping()
-    public ResponseEntity<PersonResponse> createPerson(@RequestBody PersonRequest request,
+    public ResponseEntity<PersonResponse> createPerson(@Validated(OnCreate.class) @RequestBody PersonRequest request,
             @AuthenticationPrincipal User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(personService.createPerson(request, user));
     }
@@ -38,5 +46,18 @@ public class PersonController {
             @RequestParam(value = "size", defaultValue = "20") int size) {
         PageRequest pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(personService.listPersons(user, pageable));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PersonResponse> updatePerson(@Validated(OnUpdate.class) @PathVariable UUID id,
+            @RequestBody PersonRequest request,
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.status(HttpStatus.OK).body(personService.updatePerson(id, request, user));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePerson(@PathVariable UUID id, @AuthenticationPrincipal User user) {
+        personService.deletePerson(id, user);
+        return ResponseEntity.noContent().build();
     }
 }

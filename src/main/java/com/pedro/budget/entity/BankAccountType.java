@@ -31,7 +31,8 @@ public enum BankAccountType {
     SICREDI("Sicredi"),
 
     // --- Fallback ---
-    OUTROS("Outros");
+    OUTROS("Outros"),
+    CARTEIRA("Carteira");
 
     private final String displayName;
 
