@@ -21,9 +21,6 @@ import lombok.NoArgsConstructor;
 public class TransactionExpense extends Transaction {
     ExpenseType expenseType;
 
-    protected void Transaction() {
-    }
-
     public TransactionExpense(Long amount, String description, LocalDate date,
             User user, Category category, ExpenseType type, BankAccount bankAccount) {
         this.expenseType = type;

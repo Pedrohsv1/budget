@@ -9,8 +9,8 @@ public record PersonResponse(
         UUID id,
         String name,
         String email) {
-    public static PersonResponse from(UUID id, String name, String email) {
-        return new PersonResponse(id, name, email);
+    public static PersonResponse from(Person person) {
+        return new PersonResponse(person.getId(), person.getName(), person.getEmail());
     }
 
     public static List<PersonResponse> fromList(List<Person> persons) {

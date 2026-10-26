@@ -11,13 +11,17 @@ import com.pedro.budget.service.CategoryService;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/categories")
@@ -34,6 +38,20 @@ public class CategoryController {
     @GetMapping()
     public ResponseEntity<List<CategoryResponse>> listCategories(@AuthenticationPrincipal User user) {
         return ResponseEntity.status(HttpStatus.OK).body(categoryService.listCategories(user));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryResponse> putMethodName(@PathVariable UUID id, @RequestBody CategoryRequest request,
+            @AuthenticationPrincipal User user) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(categoryService.updateCategory(id, request, user));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@AuthenticationPrincipal User user, @PathVariable UUID id) {
+        categoryService.deleteCategory(id, user);
+        return ResponseEntity.noContent().build();
     }
 
 }

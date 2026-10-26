@@ -1,192 +1,689 @@
 {
   "info": {
-    "_postman_id": "budget-api-collection",
-    "name": "Budget API",
-    "description": "Collection de testes para o Budget API - Autenticação, Transações (INCOME, EXPENSE, CREDIT_EXPENSE) e Listagem.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "_postman_id": "f265458b-50d4-44d9-a180-7b8e4be1c8ec",
+    "name": "Budget",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27631246"
   },
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:8080",
-      "type": "string"
-    },
-    {
-      "key": "token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "categoryId",
-      "value": "00000000-0000-0000-0000-000000000000",
-      "type": "string"
-    },
-    {
-      "key": "bankAccountId",
-      "value": "00000000-0000-0000-0000-000000000000",
-      "type": "string"
-    },
-    {
-      "key": "cardId",
-      "value": "00000000-0000-0000-0000-000000000000",
-      "type": "string"
-    }
-  ],
   "item": [
     {
-      "name": "1. Auth - Sign In (Login)",
-      "event": [
+      "name": "Auth",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "var jsonData = pm.response.json();",
-              "if (jsonData.token) {",
-              "    pm.collectionVariables.set('token', jsonData.token);",
-              "    console.log('Token JWT capturado com sucesso!');",
-              "}"
-            ],
-            "type": "text/javascript"
-          }
+          "name": "sign-in",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var res = pm.response.json();\r\npm.environment.set(\"token\", res.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"Senha@2026\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/sign-in",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "sign-in"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "sign-up",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var res = pm.response.json();\r\nif(res.token) {\r\n    pm.environment.set(\"token\", res.token);\r\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Pedro\",\r\n  \"username\": \"Pedrohsv1\",\r\n  \"password\": \"Senha@2026\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/auth/sign-up",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "sign-up"
+              ]
+            }
+          },
+          "response": []
         }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"username\": \"seu_usuario\",\n    \"password\": \"sua_senha123\"\n}"
+      ]
+    },
+    {
+      "name": "Bank Accounts",
+      "item": [
+        {
+          "name": "create bank account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var res = pm.response.json();\r\nif(res.id != null){\r\n    pm.environment.set(\"bank_account_id\", res.id);\r\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"type\": \"NUBANK\",\r\n  \"description\": \"Conta Nubank Principal\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/bank-accounts",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "bank-accounts"
+              ]
+            }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/auth/sign-in",
-          "host": ["{{baseUrl}}"],
-          "path": ["auth", "sign-in"]
+        {
+          "name": "list bank accounts",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/bank-accounts/search?page=0&size=20",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "bank-accounts",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update bank account",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"type\": \"ITAU\",\r\n  \"description\": \"Conta Itaú Atualizada\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/bank-accounts/{{bank_account_id}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "bank-accounts",
+                "{{bank_account_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete bank account",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/bank-accounts/{{bank_account_id}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "bank-accounts",
+                "{{bank_account_id}}"
+              ]
+            }
+          },
+          "response": []
         }
-      }
+      ]
     },
     {
-      "name": "2. Transactions - Criar Receita (INCOME)",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+      "name": "Categories",
+      "item": [
+        {
+          "name": "create category",
+          "event": [
             {
-              "key": "token",
-              "value": "{{token}}",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var res = pm.response.json();\r\nif(res.id != null){\r\n    pm.environment.set(\"category_id\", res.id);\r\n}"
+                ]
+              }
             }
-          ]
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Category 3\",\r\n  \"type\": \"EDUCATION\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/categories",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
         },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"amount\": 150000,\n    \"description\": \"Salário mensal\",\n    \"date\": \"2026-10-23\",\n    \"categoryId\": \"{{categoryId}}\",\n    \"bankAccountId\": \"{{bankAccountId}}\",\n    \"type\": \"INCOME\",\n    \"incomeType\": \"TED\"\n}"
+        {
+          "name": "list categories",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/categories",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{baseUrl}}/transactions",
-          "host": ["{{baseUrl}}"],
-          "path": ["transactions"]
+        {
+          "name": "update category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"Category 3 Updated\",\r\n  \"type\": \"EDUCATION\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/categories/{{category_id}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_id}}"
+              ]
+            }
+          },
+          "response": []
         },
-        "description": "Regras INCOME:\n- type: 'INCOME'\n- incomeType: obrigatório ('PIX', 'INVESTMENTS', 'TED')\n- amount: valor em centavos (> 0)"
-      }
+        {
+          "name": "delete category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/categories/{{category_id}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "categories",
+                "{{category_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     },
     {
-      "name": "3. Transactions - Criar Despesa Direta (EXPENSE)",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+      "name": "Persons",
+      "item": [
+        {
+          "name": "create person",
+          "event": [
             {
-              "key": "token",
-              "value": "{{token}}",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var res = pm.response.json();\r\nif(res.id != null){\r\n    pm.environment.set(\"person_id\", res.id);\r\n}"
+                ]
+              }
             }
-          ]
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Pedro\",\r\n  \"email\": \"pedro@example.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/persons",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "persons"
+              ]
+            }
+          },
+          "response": []
         },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"amount\": 4500,\n    \"description\": \"Almoço Restaurante\",\n    \"date\": \"2026-10-23\",\n    \"categoryId\": \"{{categoryId}}\",\n    \"bankAccountId\": \"{{bankAccountId}}\",\n    \"type\": \"EXPENSE\",\n    \"expenseType\": \"PIX\"\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/transactions",
-          "host": ["{{baseUrl}}"],
-          "path": ["transactions"]
-        },
-        "description": "Regras EXPENSE:\n- type: 'EXPENSE'\n- expenseType: obrigatório ('PIX', 'BOLETO', 'TED')\n- amount: valor em centavos (> 0)"
-      }
+        {
+          "name": "list persons",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/persons",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "persons"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     },
     {
-      "name": "4. Transactions - Criar Despesa Cartão (CREDIT_EXPENSE)",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "create transaction",
+          "event": [
             {
-              "key": "token",
-              "value": "{{token}}",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var res = pm.response.json();\r\nif(res.id != null){\r\n    pm.environment.set(\"transaction_id\", res.id);\r\n}"
+                ]
+              }
             }
-          ]
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 15200,\r\n  \"description\": \"Tênis Nike Traineer\",\r\n  \"date\": \"2026-10-25\",\r\n  \"categoryId\": \"{{category_id}}\",\r\n  \"bankAccountId\": \"{{bank_account_id}}\",\r\n  \"type\": \"EXPENSE\",\r\n  \"expenseType\": \"PIX\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/transactions",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "transactions"
+              ]
+            }
+          },
+          "response": []
         },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"amount\": 120000,\n    \"description\": \"Compra Notebook\",\n    \"date\": \"2026-10-23\",\n    \"categoryId\": \"{{categoryId}}\",\n    \"bankAccountId\": \"{{bankAccountId}}\",\n    \"type\": \"CREDIT_EXPENSE\",\n    \"installmentNumber\": 1,\n    \"installmentTotal\": 6,\n    \"cardId\": \"{{cardId}}\"\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/transactions",
-          "host": ["{{baseUrl}}"],
-          "path": ["transactions"]
-        },
-        "description": "Regras CREDIT_EXPENSE:\n- type: 'CREDIT_EXPENSE'\n- installmentNumber: obrigatório (número da parcela atual)\n- installmentTotal: obrigatório (total de parcelas)\n- cardId: obrigatório (UUID do cartão cadastrado)"
-      }
-    },
-    {
-      "name": "5. Transactions - Listar Transações",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
+        {
+          "name": "create transaction (income)",
+          "event": [
             {
-              "key": "token",
-              "value": "{{token}}",
-              "type": "string"
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var res = pm.response.json();\r\nif(res.id != null){\r\n    pm.environment.set(\"transaction_id\", res.id);\r\n}"
+                ]
+              }
             }
-          ]
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 500000,\r\n  \"description\": \"Salário Mensal\",\r\n  \"date\": \"2026-10-25\",\r\n  \"categoryId\": \"{{category_id}}\",\r\n  \"bankAccountId\": \"{{bank_account_id}}\",\r\n  \"type\": \"INCOME\",\r\n  \"incomeType\": \"TED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/transactions",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "transactions"
+              ]
+            }
+          },
+          "response": []
         },
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/transactions",
-          "host": ["{{baseUrl}}"],
-          "path": ["transactions"]
+        {
+          "name": "create transaction (credit)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var res = pm.response.json();\r\nif(res.id != null){\r\n    pm.environment.set(\"transaction_id\", res.id);\r\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 120000,\r\n  \"description\": \"Compra Notebook\",\r\n  \"date\": \"2026-10-25\",\r\n  \"categoryId\": \"{{category_id}}\",\r\n  \"bankAccountId\": \"{{bank_account_id}}\",\r\n  \"type\": \"CREDIT_EXPENSE\",\r\n  \"installmentNumber\": 1,\r\n  \"installmentTotal\": 6,\r\n  \"cardId\": \"00000000-0000-0000-0000-000000000000\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/transactions",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "transactions"
+              ]
+            }
+          },
+          "response": []
         },
-        "description": "Lista todas as transações cadastradas pertencentes ao usuário logado."
-      }
+        {
+          "name": "list transactions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/transactions?page=0&size=20",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete transaction",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/transactions/{{transaction_id}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "transactions",
+                "{{transaction_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }

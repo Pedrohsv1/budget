@@ -1,7 +1,7 @@
 package com.pedro.budget.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.pedro.budget.dto.PersonRequest;
@@ -19,10 +19,26 @@ public class PersonService {
 
     public PersonResponse createPerson(PersonRequest request, User user) {
         Person person = personRepository.save(request.toEntity(user));
-        return PersonResponse.from(person.getId(), person.getName(), person.getEmail());
+        return PersonResponse.from(person);
     }
 
-    public List<PersonResponse> listPersons(User user) {
-        return PersonResponse.fromList(personRepository.findByUserId(user.getId()));
+    public Page<PersonResponse> listPersons(User user, Pageable pageable) {
+        return personRepository.findByUserId(user.getId(), pageable)
+                .map(PersonResponse::from);
+    }
+
+    public PersonResponse updatePerson(Long id, PersonRequest request, User user) {
+        Person person = personRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new RuntimeException("Person not found"));
+        person.setName(request.name());
+        person.setEmail(request.email());
+        personRepository.save(person);
+        return PersonResponse.from(person);
+    }
+
+    public void deletePerson(Long id, User user) {
+        Person person = personRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new RuntimeException("Person not found"));
+        personRepository.delete(person);
     }
 }

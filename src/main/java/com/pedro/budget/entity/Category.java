@@ -43,4 +43,14 @@ public class Category {
         this.type = type;
         this.user = user;
     }
+
+    public void update(String title, CategoryType type) {
+        if (title != null && !title.isBlank()) {
+            this.title = title;
+        }
+        if (type != null) {
+            this.type = type;
+        }
+        this.title = title;
+    }
 }

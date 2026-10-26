@@ -4,6 +4,9 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.pedro.budget.dto.TransactionRequest;
@@ -16,6 +19,7 @@ import com.pedro.budget.entity.Transaction.Transaction;
 import com.pedro.budget.entity.Transaction.TransactionCredit;
 import com.pedro.budget.entity.Transaction.TransactionExpense;
 import com.pedro.budget.entity.Transaction.TransactionIncome;
+import com.pedro.budget.repository.BankAccountRepository;
 import com.pedro.budget.repository.CategoryRepository;
 import com.pedro.budget.repository.Transaction.TransactionCreditRepository;
 import com.pedro.budget.repository.Transaction.TransactionExpenseRepository;
@@ -32,6 +36,7 @@ public class TransactionService {
     private final TransactionExpenseRepository transactionExpenseRepository;
     private final TransactionCreditRepository transactionCreditRepository;
     private final CategoryRepository categoryRepository;
+    private final BankAccountRepository bankAccountRepository;
 
     @Transactional
     public TransactionResponse createTransaction(TransactionRequest request, User user) {
@@ -39,7 +44,8 @@ public class TransactionService {
                 .findByIdAndUserId(request.categoryId(), user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find category"));
 
-        BankAccount bankAccount = null;
+        BankAccount bankAccount = bankAccountRepository.findByIdAndUserId(request.bankAccountId(), user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find bank account"));
 
         switch (request.type()) {
             case INCOME:
@@ -103,14 +109,10 @@ public class TransactionService {
         }
     }
 
-    public List<TransactionResponse> listTransactions(User user) {
-        List<TransactionResponse> transactionResponses = new ArrayList<>();
-
-        for (Transaction transaction : transactionRepository.findAllByUserId(user.getId())) {
-            transactionResponses.add(TransactionResponse.from(transaction));
-        }
-
-        return transactionResponses;
+    public Page<TransactionResponse> listTransactions(User user, Pageable pageable) {
+        Page<TransactionResponse> page = transactionRepository.findAllByUserId(user.getId(), pageable)
+                .map(TransactionResponse::from);
+        return page;
     }
 
     public void deleteTransaction(User user, java.util.UUID transactionId) {

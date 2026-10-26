@@ -2,10 +2,15 @@ package com.pedro.budget.entity;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,8 +26,24 @@ public class BankAccount {
 
     private String description;
 
-    public BankAccount(BankAccountType type, String description) {
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @NotNull
+    @JsonIgnore
+    private User user;
+
+    public BankAccount(BankAccountType type, String description, User user) {
         this.type = type;
         this.description = description;
+        this.user = user;
+    }
+
+    public void update(BankAccountType type, String description) {
+        if (type != null) {
+            this.type = type;
+        }
+        if (description != null && !description.isBlank()) {
+            this.description = description;
+        }
     }
 }
