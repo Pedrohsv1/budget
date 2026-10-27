@@ -25,12 +25,17 @@ public class Card {
     private String cardNumber; // Four digits of the card number
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bank_account_id")
+    @JoinColumn(name = "bank_account_id", referencedColumnName = "id")
     private BankAccount bankAccount;
 
-    public Card(String description, String cardNumber, BankAccount bankAccount) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    public Card(String description, String cardNumber, BankAccount bankAccount, User user) {
         this.description = description;
         this.cardNumber = cardNumber;
         this.bankAccount = bankAccount;
+        this.user = user;
     }
 }

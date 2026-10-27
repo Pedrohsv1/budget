@@ -49,8 +49,8 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PersonResponse> updatePerson(@Validated(OnUpdate.class) @PathVariable UUID id,
-            @RequestBody PersonRequest request,
+    public ResponseEntity<PersonResponse> updatePerson(@PathVariable UUID id,
+            @Validated(OnUpdate.class) @RequestBody PersonRequest request,
             @AuthenticationPrincipal User user) {
         return ResponseEntity.status(HttpStatus.OK).body(personService.updatePerson(id, request, user));
     }

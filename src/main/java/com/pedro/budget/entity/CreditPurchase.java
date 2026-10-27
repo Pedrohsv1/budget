@@ -35,9 +35,7 @@ public class CreditPurchase {
 
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("installmentNumber ASC")
-    private List<TransactionCredit> transactions = new ArrayList<>(); // pedrohsv1: Create DTO for CreditPurchase and
-                                                                      // TransactionCredit to avoid exposing entity
-                                                                      // directly
+    private List<TransactionCredit> transactions = new ArrayList<>();
 
     @NotNull(message = "Total installments is required")
     private Integer totalInstallments;

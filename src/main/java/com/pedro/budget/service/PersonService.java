@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pedro.budget.dto.PersonRequest;
 import com.pedro.budget.dto.PersonResponse;
@@ -16,9 +17,11 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class PersonService {
     private final PersonRepository personRepository;
 
+    @Transactional
     public PersonResponse createPerson(PersonRequest request, User user) {
         if (personRepository.findByNameAndUserId(request.name(), user.getId()).isPresent()) {
             throw new RuntimeException("This name is already used by a person");
@@ -33,6 +36,7 @@ public class PersonService {
                 .map(PersonResponse::from);
     }
 
+    @Transactional
     public PersonResponse updatePerson(UUID id, PersonRequest request, User user) {
         Person person = personRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new RuntimeException("Person not found"));
@@ -41,12 +45,14 @@ public class PersonService {
         return PersonResponse.from(person);
     }
 
+    @Transactional
     public void deletePerson(UUID id, User user) {
         Person person = personRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new RuntimeException("Person not found"));
         personRepository.delete(person);
     }
 
+    @Transactional
     public void createDefaultPerson(User user) {
         Person defaultPerson = new Person("Me", user.getUsername(), user);
         personRepository.save(defaultPerson);

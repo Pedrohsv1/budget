@@ -35,7 +35,6 @@ public class Category {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @NotNull
-    @JsonIgnore
     User user;
 
     public Category(String title, CategoryType type, User user) {
@@ -51,6 +50,5 @@ public class Category {
         if (type != null) {
             this.type = type;
         }
-        this.title = title;
     }
 }

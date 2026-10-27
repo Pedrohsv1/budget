@@ -42,7 +42,7 @@ public class CategoryService {
         Category category = categoryRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find category"));
 
-        if (category.getTitle() != request.title()
+        if (!category.getTitle().equalsIgnoreCase(request.title())
                 && categoryRepository.existsByTitleAndUserId(request.title(), user.getId())) {
             throw new IllegalArgumentException("Category title must be unique");
         }

@@ -2,8 +2,6 @@ package com.pedro.budget.entity;
 
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +27,6 @@ public class BankAccount {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @NotNull
-    @JsonIgnore
     private User user;
 
     public BankAccount(BankAccountType type, String description, User user) {
