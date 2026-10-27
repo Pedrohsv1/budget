@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.pedro.budget.enums.CategoryType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,6 +30,7 @@ public class Category {
     @NotEmpty(message = "Title cannot be blank")
     String title;
 
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "Type cannot be null")
     CategoryType type;
 

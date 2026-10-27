@@ -10,6 +10,9 @@ import com.pedro.budget.enums.TransactionType;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +22,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TransactionIncome extends Transaction {
+    @NotNull
+    @Enumerated(EnumType.STRING)
     IncomeType incomeType;
 
     public TransactionIncome(Long amount, String description, LocalDate date,
