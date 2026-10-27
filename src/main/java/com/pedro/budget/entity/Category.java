@@ -2,7 +2,6 @@ package com.pedro.budget.entity;
 
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pedro.budget.enums.CategoryType;
 
 import jakarta.persistence.Entity;
