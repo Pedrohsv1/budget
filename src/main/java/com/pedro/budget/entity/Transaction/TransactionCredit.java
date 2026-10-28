@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@DiscriminatorValue("CREDIT-EXPENSE")
+@DiscriminatorValue("CREDIT_EXPENSE")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TransactionCredit extends Transaction {

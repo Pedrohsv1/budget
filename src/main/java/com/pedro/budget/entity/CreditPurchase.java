@@ -30,9 +30,11 @@ public class CreditPurchase {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Card card;
 
+    @NotNull
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("installmentNumber ASC")
     private List<TransactionCredit> transactions = new ArrayList<>();

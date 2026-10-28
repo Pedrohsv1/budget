@@ -22,7 +22,7 @@ public record TransactionResponse(
         CategoryResponse category,
         IncomeType incomeType,
         ExpenseType expenseType,
-        CreditPurchaseResponse creditPurchase,
+        CreditPurchaseSummaryResponse creditPurchase,
         BankAccountResponse bankAccount,
         TransactionType type) {
     public static TransactionResponse from(Transaction t) {
@@ -45,7 +45,7 @@ public record TransactionResponse(
                     .build();
 
             case TransactionCredit credit -> builder
-                    .creditPurchase(CreditPurchaseResponse.from(credit.getPurchase()))
+                    .creditPurchase(CreditPurchaseSummaryResponse.from(credit.getPurchase()))
                     .build();
 
             default -> builder.build();

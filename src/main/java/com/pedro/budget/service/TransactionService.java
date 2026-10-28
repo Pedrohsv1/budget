@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.pedro.budget.dto.TransactionRequest;
 import com.pedro.budget.dto.TransactionResponse;
 import com.pedro.budget.entity.BankAccount;
+import com.pedro.budget.entity.Card;
 import com.pedro.budget.entity.Category;
 import com.pedro.budget.entity.CreditPurchase;
 import com.pedro.budget.entity.User;
@@ -17,6 +18,7 @@ import com.pedro.budget.entity.Transaction.TransactionCredit;
 import com.pedro.budget.entity.Transaction.TransactionExpense;
 import com.pedro.budget.entity.Transaction.TransactionIncome;
 import com.pedro.budget.repository.BankAccountRepository;
+import com.pedro.budget.repository.CardRepository;
 import com.pedro.budget.repository.CategoryRepository;
 import com.pedro.budget.repository.Transaction.TransactionCreditRepository;
 import com.pedro.budget.repository.Transaction.TransactionExpenseRepository;
@@ -32,8 +34,10 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionExpenseRepository transactionExpenseRepository;
     private final TransactionCreditRepository transactionCreditRepository;
+    // Repositories to fetch related entities
     private final CategoryRepository categoryRepository;
     private final BankAccountRepository bankAccountRepository;
+    private final CardRepository cardRepository;
 
     @Transactional
     public TransactionResponse createTransaction(TransactionRequest request, User user) {
@@ -72,11 +76,10 @@ public class TransactionService {
                     throw new InvalidParameterException("Installment number and total are required");
                 }
 
-                if (request.cardId() == null) {
-                    throw new InvalidParameterException("Card ID is required");
-                }
+                Card card = cardRepository.findByIdAndUserId(request.cardId(), user.getId())
+                        .orElseThrow(() -> new EntityNotFoundException("Cannot find card"));
 
-                CreditPurchase creditPurchase = new CreditPurchase(null, request.installmentTotal());
+                CreditPurchase creditPurchase = new CreditPurchase(card, request.installmentTotal());
 
                 var amount = request.amount();
                 var cents = amount / request.installmentTotal();
