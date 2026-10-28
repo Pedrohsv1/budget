@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "credit-purchase")
+@Table(name = "credit_purchase")
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class CreditPurchase {
