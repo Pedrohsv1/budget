@@ -7,12 +7,11 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.pedro.budget.entity.Category;
-import com.pedro.budget.entity.User;
 
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
-    List<Category> findAllByUser(User user);
+    List<Category> findAllByUserId(UUID userId);
 
-    Boolean existsByTitleAndUserId(String title, UUID userId);
+    Boolean existsByTitleIgnoreCaseAndUserId(String title, UUID userId);
 
     Optional<Category> findByIdAndUserId(UUID id, UUID userId);
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pedro.budget.dto.CategoryRequest;
 import com.pedro.budget.dto.CategoryResponse;
@@ -18,11 +19,13 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
+    @Transactional
     public CategoryResponse createCategory(CategoryRequest request, User user) {
-        if (categoryRepository.existsByTitleAndUserId(request.title(), user.getId())) {
+        if (categoryRepository.existsByTitleIgnoreCaseAndUserId(request.title(), user.getId())) {
             throw new IllegalArgumentException("Category title must be unique");
         }
 
@@ -31,19 +34,13 @@ public class CategoryService {
         return CategoryResponse.from(category);
     }
 
-    public void deleteCategory(UUID id, User user) {
-        Category category = categoryRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find category"));
-
-        categoryRepository.delete(category);
-    }
-
+    @Transactional
     public CategoryResponse updateCategory(UUID id, CategoryRequest request, User user) {
         Category category = categoryRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find category"));
 
         if (!category.getTitle().equalsIgnoreCase(request.title())
-                && categoryRepository.existsByTitleAndUserId(request.title(), user.getId())) {
+                && categoryRepository.existsByTitleIgnoreCaseAndUserId(request.title(), user.getId())) {
             throw new IllegalArgumentException("Category title must be unique");
         }
 
@@ -53,11 +50,20 @@ public class CategoryService {
     }
 
     public List<CategoryResponse> listCategories(User user) {
-        List<Category> categories = categoryRepository.findAllByUser(user);
+        List<Category> categories = categoryRepository.findAllByUserId(user.getId());
 
         return CategoryResponse.fromList(categories);
     }
 
+    @Transactional
+    public void deleteCategory(UUID id, User user) {
+        Category category = categoryRepository.findByIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find category"));
+
+        categoryRepository.delete(category);
+    }
+
+    @Transactional
     public Void createDefaultCategories(User user) {
         List<Category> categories = new ArrayList<>();
 

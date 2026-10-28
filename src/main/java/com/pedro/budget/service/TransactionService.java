@@ -5,6 +5,7 @@ import java.security.InvalidParameterException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pedro.budget.dto.TransactionRequest;
 import com.pedro.budget.dto.TransactionResponse;
@@ -25,11 +26,11 @@ import com.pedro.budget.repository.Transaction.TransactionExpenseRepository;
 import com.pedro.budget.repository.Transaction.TransactionRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final TransactionExpenseRepository transactionExpenseRepository;
@@ -115,6 +116,7 @@ public class TransactionService {
         return page;
     }
 
+    @Transactional
     public void deleteTransaction(User user, java.util.UUID transactionId) {
         Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find transaction"));
