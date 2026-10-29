@@ -25,7 +25,6 @@ import com.pedro.budget.dto.BankAccountRequest;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.service.BankAccountService;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
