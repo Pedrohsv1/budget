@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pedro.budget.dto.CategoryRequest;
 import com.pedro.budget.dto.CategoryResponse;
+import com.pedro.budget.dto.validation.OnCreate;
+import com.pedro.budget.dto.validation.OnUpdate;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.service.CategoryService;
 
@@ -16,6 +18,7 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +33,8 @@ public class CategoryController {
     public final CategoryService categoryService;
 
     @PostMapping()
-    public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryRequest request,
+    public ResponseEntity<CategoryResponse> createCategory(
+            @Validated(OnCreate.class) @RequestBody CategoryRequest request,
             @AuthenticationPrincipal User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.createCategory(request, user));
     }
@@ -41,7 +45,8 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryResponse> putMethodName(@PathVariable UUID id, @RequestBody CategoryRequest request,
+    public ResponseEntity<CategoryResponse> putMethodName(@PathVariable UUID id,
+            @Validated(OnUpdate.class) @RequestBody CategoryRequest request,
             @AuthenticationPrincipal User user) {
 
         return ResponseEntity.status(HttpStatus.OK)

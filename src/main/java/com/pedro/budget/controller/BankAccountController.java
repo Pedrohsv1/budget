@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pedro.budget.dto.BankAccountResponse;
+import com.pedro.budget.dto.validation.OnCreate;
+import com.pedro.budget.dto.validation.OnUpdate;
 import com.pedro.budget.dto.BankAccountRequest;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.service.BankAccountService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -31,7 +35,8 @@ public class BankAccountController {
     private final BankAccountService bankAccountService;
 
     @PostMapping()
-    public ResponseEntity<BankAccountResponse> createBankAccount(@RequestBody BankAccountRequest request,
+    public ResponseEntity<BankAccountResponse> createBankAccount(
+            @Validated(OnCreate.class) @RequestBody BankAccountRequest request,
             @AuthenticationPrincipal User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(bankAccountService.createBankAccount(request, user));
     }
@@ -45,7 +50,8 @@ public class BankAccountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BankAccountResponse> updateBankAccount(@RequestBody BankAccountRequest request,
+    public ResponseEntity<BankAccountResponse> updateBankAccount(
+            @Validated(OnUpdate.class) @RequestBody BankAccountRequest request,
             @AuthenticationPrincipal User user, @PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(bankAccountService.updateBankAccount(request, user, id));
     }

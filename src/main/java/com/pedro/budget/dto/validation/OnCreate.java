@@ -1,5 +1,7 @@
 package com.pedro.budget.dto.validation;
 
-public interface OnCreate {
+import jakarta.validation.groups.Default;
+
+public interface OnCreate extends Default {
 
 }
