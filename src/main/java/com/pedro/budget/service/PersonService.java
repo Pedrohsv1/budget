@@ -53,8 +53,9 @@ public class PersonService {
     }
 
     @Transactional
-    public void createDefaultPerson(User user) {
+    public Void createDefaultPerson(User user) {
         Person defaultPerson = new Person("Me", user.getUsername(), user);
         personRepository.save(defaultPerson);
+        return null;
     }
 }
