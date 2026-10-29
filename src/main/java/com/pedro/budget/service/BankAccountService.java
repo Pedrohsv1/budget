@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pedro.budget.dto.BankAccountResponse;
 import com.pedro.budget.dto.BankAccountRequest;
@@ -15,9 +16,11 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class BankAccountService {
     private final BankAccountRepository bankAccountRepository;
 
+    @Transactional
     public BankAccountResponse createBankAccount(BankAccountRequest request, User user) {
         com.pedro.budget.entity.BankAccount bankAccount = bankAccountRepository.save(request.toEntity(user));
         return BankAccountResponse.from(bankAccount);
@@ -27,6 +30,7 @@ public class BankAccountService {
         return bankAccountRepository.findAllByUserId(user.getId(), pageable).map(BankAccountResponse::from);
     }
 
+    @Transactional
     public BankAccountResponse updateBankAccount(BankAccountRequest request, User user, UUID bankId) {
         com.pedro.budget.entity.BankAccount bankAccount = bankAccountRepository.findByIdAndUserId(bankId, user.getId())
                 .orElseThrow(() -> new RuntimeException("Bank account not found"));
@@ -40,6 +44,7 @@ public class BankAccountService {
         return BankAccountResponse.from(bankAccount);
     }
 
+    @Transactional
     public void deleteBankAccount(UUID bankId, User user) {
         com.pedro.budget.entity.BankAccount bankAccount = bankAccountRepository.findByIdAndUserId(bankId, user.getId())
                 .orElseThrow(() -> new RuntimeException("Bank account not found"));
