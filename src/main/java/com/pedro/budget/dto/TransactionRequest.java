@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import com.pedro.budget.entity.BankAccount;
 import com.pedro.budget.entity.Category;
 import com.pedro.budget.entity.CreditPurchase;
+import com.pedro.budget.entity.Person;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.entity.Transaction.Transaction;
 import com.pedro.budget.entity.Transaction.TransactionCredit;
@@ -26,6 +27,7 @@ public record TransactionRequest(
         @NotNull(message = "Category cannot be null") UUID categoryId,
         @NotNull(message = "Transaction type cannot be null") TransactionType type,
         @NotNull(message = "Bank account cannot be null") UUID bankAccountId,
+        @NotNull(message = "Person cannot be null") UUID personId,
 
         // Can be used for income and expense transactions
         IncomeType incomeType,
@@ -34,13 +36,16 @@ public record TransactionRequest(
         Integer installmentNumber,
         Integer installmentTotal,
         UUID cardId) {
-    public Transaction from(BankAccount bankAccount, User user, CreditPurchase creditPurchase, Category category) {
+    public Transaction from(BankAccount bankAccount, User user, CreditPurchase creditPurchase, Category category,
+            Person person) {
         return switch (type) {
-            case INCOME -> new TransactionIncome(amount, description, date, user, category, incomeType, bankAccount);
-            case EXPENSE -> new TransactionExpense(amount, description, date, user, category, expenseType, bankAccount);
+            case INCOME ->
+                new TransactionIncome(amount, description, date, user, category, incomeType, bankAccount, person);
+            case EXPENSE ->
+                new TransactionExpense(amount, description, date, user, category, expenseType, bankAccount, person);
             case CREDIT_EXPENSE -> new TransactionCredit(amount, description, date, user, category, creditPurchase,
                     installmentNumber, installmentTotal,
-                    bankAccount);
+                    bankAccount, person);
         };
     }
 }

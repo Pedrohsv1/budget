@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.pedro.budget.entity.BankAccount;
 import com.pedro.budget.entity.Category;
+import com.pedro.budget.entity.Person;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.enums.TransactionType;
 
@@ -68,8 +69,13 @@ public abstract class Transaction {
     @JoinColumn(name = "bank_account_id", nullable = false)
     private BankAccount bankAccount;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "person_id", nullable = false)
+    private Person person;
+
     protected Transaction(Long amount, String description,
-            LocalDate date, User user, Category category, TransactionType transactionType, BankAccount bankAccount) {
+            LocalDate date, User user, Category category, TransactionType transactionType, BankAccount bankAccount,
+            Person person) {
         this.amount = amount;
         this.description = description;
         this.date = date;
@@ -77,6 +83,7 @@ public abstract class Transaction {
         this.category = category;
         this.transactionType = transactionType;
         this.bankAccount = bankAccount;
+        this.person = person;
     }
 
     protected Transaction() {

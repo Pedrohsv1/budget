@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.pedro.budget.entity.BankAccount;
 import com.pedro.budget.entity.Category;
+import com.pedro.budget.entity.Person;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.enums.IncomeType;
 import com.pedro.budget.enums.TransactionType;
@@ -27,8 +28,8 @@ public class TransactionIncome extends Transaction {
     IncomeType incomeType;
 
     public TransactionIncome(Long amount, String description, LocalDate date,
-            User user, Category category, IncomeType type, BankAccount bankAccount) {
+            User user, Category category, IncomeType type, BankAccount bankAccount, Person person) {
         this.incomeType = type;
-        super(amount, description, date, user, category, TransactionType.INCOME, bankAccount);
+        super(amount, description, date, user, category, TransactionType.INCOME, bankAccount, person);
     }
 }
