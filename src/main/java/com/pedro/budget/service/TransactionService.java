@@ -21,6 +21,7 @@ import com.pedro.budget.entity.Transaction.TransactionIncome;
 import com.pedro.budget.repository.BankAccountRepository;
 import com.pedro.budget.repository.CardRepository;
 import com.pedro.budget.repository.CategoryRepository;
+import com.pedro.budget.repository.CreditPurchaseRepository;
 import com.pedro.budget.repository.Transaction.TransactionCreditRepository;
 import com.pedro.budget.repository.Transaction.TransactionExpenseRepository;
 import com.pedro.budget.repository.Transaction.TransactionRepository;
@@ -39,6 +40,7 @@ public class TransactionService {
     private final CategoryRepository categoryRepository;
     private final BankAccountRepository bankAccountRepository;
     private final CardRepository cardRepository;
+    private final CreditPurchaseRepository creditPurchaseRepository;
 
     @Transactional
     public TransactionResponse createTransaction(TransactionRequest request, User user) {
@@ -80,7 +82,8 @@ public class TransactionService {
                 Card card = cardRepository.findByIdAndUserId(request.cardId(), user.getId())
                         .orElseThrow(() -> new EntityNotFoundException("Cannot find card"));
 
-                CreditPurchase creditPurchase = new CreditPurchase(card, request.installmentTotal());
+                CreditPurchase creditPurchase = creditPurchaseRepository
+                        .save(new CreditPurchase(card, request.installmentTotal()));
 
                 var amount = request.amount();
                 var cents = amount / request.installmentTotal();
