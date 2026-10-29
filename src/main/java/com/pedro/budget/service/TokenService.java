@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.pedro.budget.entity.User;
 
 @Service
@@ -19,31 +17,23 @@ public class TokenService {
     private String secret;
 
     public String generateToken(User user) throws RuntimeException {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT
-                    .create()
-                    .withIssuer("auth-api")
-                    .withSubject(user.getUsername())
-                    .withExpiresAt(generateExpirationDate())
-                    .sign(algorithm);
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        String token = JWT
+                .create()
+                .withIssuer("auth-api")
+                .withSubject(user.getUsername())
+                .withExpiresAt(generateExpirationDate())
+                .sign(algorithm);
 
-            return token;
+        return token;
 
-        } catch (JWTCreationException exception) {
-            throw new RuntimeException("Error while generating token", exception);
-        }
     }
 
-    public String validateToken(String token) throws RuntimeException {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+    public String validateToken(String token) {
+        Algorithm algorithm = Algorithm.HMAC256(secret);
 
-            return JWT.require(algorithm).withIssuer("auth-api").build().verify(token).getSubject();
+        return JWT.require(algorithm).withIssuer("auth-api").build().verify(token).getSubject();
 
-        } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Error while verifing token", exception);
-        }
     }
 
     private Instant generateExpirationDate() {
