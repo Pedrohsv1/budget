@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.pedro.budget.dto.SignInRequest;
 import com.pedro.budget.dto.SignResponse;
@@ -52,6 +53,9 @@ class AuthServiceTest {
 
     @Mock
     private PersonService personService;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("Sign in should return token + username + id when user is authenticated")

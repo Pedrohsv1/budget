@@ -4,8 +4,9 @@ import java.security.InvalidParameterException;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pedro.budget.dto.SignUpRequest;
 import com.pedro.budget.dto.SignResponse;
@@ -13,17 +14,18 @@ import com.pedro.budget.dto.SignInRequest;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.repository.UserRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class AuthService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final CategoryService categoryService;
     private final AuthenticationManager authenticationManager; // Pedrohsv1: Cycle autowired when UserDetails
     private final PersonService personService;
+    private final PasswordEncoder passwordEncoder; // @Bean PasswordEncoder in the SecurityConfigurations class
 
     @Transactional
     public SignResponse signUp(SignUpRequest request) {
@@ -31,7 +33,7 @@ public class AuthService {
             throw new InvalidParameterException("This username is already used by a user");
         }
 
-        String hashedPassword = new BCryptPasswordEncoder().encode(request.password());
+        String hashedPassword = passwordEncoder.encode(request.password());
 
         User user = userRepository.save(request.to(hashedPassword));
 
