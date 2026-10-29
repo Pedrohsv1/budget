@@ -1,7 +1,5 @@
 package com.pedro.budget.service;
 
-import java.security.InvalidParameterException;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +10,7 @@ import com.pedro.budget.dto.SignUpRequest;
 import com.pedro.budget.dto.SignResponse;
 import com.pedro.budget.dto.SignInRequest;
 import com.pedro.budget.entity.User;
+import com.pedro.budget.exception.ResourceAlreadyExistsException;
 import com.pedro.budget.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
@@ -25,12 +24,12 @@ public class AuthService {
     private final CategoryService categoryService;
     private final AuthenticationManager authenticationManager; // Pedrohsv1: Cycle autowired when UserDetails
     private final PersonService personService;
-    private final PasswordEncoder passwordEncoder; // @Bean PasswordEncoder in the SecurityConfigurations class
+    private final PasswordEncoder passwordEncoder; // Pedrohsv1: @Bean PasswordEncoder in the SecurityConfigurations
 
     @Transactional
     public SignResponse signUp(SignUpRequest request) {
         if (userRepository.findByUsername(request.username()) != null) {
-            throw new InvalidParameterException("This username is already used by a user");
+            throw new ResourceAlreadyExistsException("This username is already used by a user");
         }
 
         String hashedPassword = passwordEncoder.encode(request.password());

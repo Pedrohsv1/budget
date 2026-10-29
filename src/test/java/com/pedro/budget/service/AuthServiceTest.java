@@ -89,6 +89,7 @@ class AuthServiceTest {
         when(userRepository.findByUsername(any(String.class))).thenReturn(null);
 
         SignUpRequest signUpRequest = new SignUpRequest("new user name", "newuser", "password");
+
         SignResponse signResponse = authService.signUp(signUpRequest);
 
         assertNotNull(signResponse);

@@ -12,9 +12,10 @@ import com.pedro.budget.dto.CategoryResponse;
 import com.pedro.budget.entity.Category;
 import com.pedro.budget.entity.User;
 import com.pedro.budget.enums.CategoryType;
+import com.pedro.budget.exception.ResourceAlreadyExistsException;
+import com.pedro.budget.exception.ResourceNotFoundException;
 import com.pedro.budget.repository.CategoryRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -26,7 +27,7 @@ public class CategoryService {
     @Transactional
     public CategoryResponse createCategory(CategoryRequest request, User user) {
         if (categoryRepository.existsByTitleIgnoreCaseAndUserId(request.title(), user.getId())) {
-            throw new IllegalArgumentException("Category title must be unique");
+            throw new ResourceAlreadyExistsException("Category title must be unique");
         }
 
         Category category = categoryRepository.save(request.toEntity(user));
@@ -37,11 +38,11 @@ public class CategoryService {
     @Transactional
     public CategoryResponse updateCategory(UUID id, CategoryRequest request, User user) {
         Category category = categoryRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find category"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find category"));
 
         if (!category.getTitle().equalsIgnoreCase(request.title())
                 && categoryRepository.existsByTitleIgnoreCaseAndUserId(request.title(), user.getId())) {
-            throw new IllegalArgumentException("Category title must be unique");
+            throw new ResourceAlreadyExistsException("Category title must be unique");
         }
 
         category.update(request.title(), request.type());
@@ -58,7 +59,7 @@ public class CategoryService {
     @Transactional
     public void deleteCategory(UUID id, User user) {
         Category category = categoryRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find category"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find category"));
 
         categoryRepository.delete(category);
     }

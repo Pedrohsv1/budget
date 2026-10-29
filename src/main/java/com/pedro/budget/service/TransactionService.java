@@ -18,6 +18,7 @@ import com.pedro.budget.entity.Transaction.Transaction;
 import com.pedro.budget.entity.Transaction.TransactionCredit;
 import com.pedro.budget.entity.Transaction.TransactionExpense;
 import com.pedro.budget.entity.Transaction.TransactionIncome;
+import com.pedro.budget.exception.ResourceNotFoundException;
 import com.pedro.budget.repository.BankAccountRepository;
 import com.pedro.budget.repository.CardRepository;
 import com.pedro.budget.repository.CategoryRepository;
@@ -26,7 +27,6 @@ import com.pedro.budget.repository.Transaction.TransactionCreditRepository;
 import com.pedro.budget.repository.Transaction.TransactionExpenseRepository;
 import com.pedro.budget.repository.Transaction.TransactionRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -46,10 +46,10 @@ public class TransactionService {
     public TransactionResponse createTransaction(TransactionRequest request, User user) {
         Category category = categoryRepository
                 .findByIdAndUserId(request.categoryId(), user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find category"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find category"));
 
         BankAccount bankAccount = bankAccountRepository.findByIdAndUserId(request.bankAccountId(), user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find bank account"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find bank account"));
 
         switch (request.type()) {
             case INCOME:
@@ -80,7 +80,7 @@ public class TransactionService {
                 }
 
                 Card card = cardRepository.findByIdAndUserId(request.cardId(), user.getId())
-                        .orElseThrow(() -> new EntityNotFoundException("Cannot find card"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Cannot find card"));
 
                 CreditPurchase creditPurchase = creditPurchaseRepository
                         .save(new CreditPurchase(card, request.installmentTotal()));
@@ -122,7 +122,7 @@ public class TransactionService {
     @Transactional
     public void deleteTransaction(User user, java.util.UUID transactionId) {
         Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Cannot find transaction"));
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot find transaction"));
 
         transactionRepository.delete(transaction);
     }
