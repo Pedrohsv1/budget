@@ -13,12 +13,14 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "transactions_expenses")
 @DiscriminatorValue("EXPENSE")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

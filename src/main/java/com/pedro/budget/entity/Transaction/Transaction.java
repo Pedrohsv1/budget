@@ -30,7 +30,7 @@ import lombok.Getter;
 
 @Entity
 @Table(name = "transactions")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "kind")
 @Getter
 public abstract class Transaction {
