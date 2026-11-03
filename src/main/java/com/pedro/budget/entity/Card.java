@@ -24,6 +24,10 @@ public class Card {
 
     private String cardNumber; // Four digits of the card number
 
+    private Integer dueDay;
+
+    private Integer closingDay;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bank_account_id", referencedColumnName = "id")
     private BankAccount bankAccount;
@@ -32,10 +36,13 @@ public class Card {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    public Card(String description, String cardNumber, BankAccount bankAccount, User user) {
+    public Card(String description, String cardNumber, BankAccount bankAccount, User user, Integer dueDay,
+            Integer closingDay) {
         this.description = description;
         this.cardNumber = cardNumber;
         this.bankAccount = bankAccount;
         this.user = user;
+        this.dueDay = dueDay;
+        this.closingDay = closingDay;
     }
 }
