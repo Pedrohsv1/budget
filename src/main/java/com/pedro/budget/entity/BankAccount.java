@@ -27,23 +27,29 @@ public class BankAccount {
 
     private String description;
 
+    private Long initialBalance;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @NotNull
     private User user;
 
-    public BankAccount(BankAccountType type, String description, User user) {
+    public BankAccount(BankAccountType type, String description, User user, Long initialBalance) {
         this.type = type;
         this.description = description;
         this.user = user;
+        this.initialBalance = initialBalance;
     }
 
-    public void update(BankAccountType type, String description) {
+    public void update(BankAccountType type, String description, Long initialBalance) {
         if (type != null) {
             this.type = type;
         }
         if (description != null && !description.isBlank()) {
             this.description = description;
+        }
+        if (initialBalance != null) {
+            this.initialBalance = initialBalance;
         }
     }
 }

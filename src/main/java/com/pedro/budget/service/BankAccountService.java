@@ -37,7 +37,7 @@ public class BankAccountService {
         if (!bankAccount.getUser().getId().equals(user.getId())) {
             throw new RuntimeException("You are not authorized to update this bank account");
         }
-        bankAccount.update(request.type(), request.description());
+        bankAccount.update(request.type(), request.description(), request.initialBalance());
 
         bankAccountRepository.save(bankAccount);
 

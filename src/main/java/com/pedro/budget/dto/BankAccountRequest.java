@@ -13,8 +13,9 @@ public record BankAccountRequest(
         @NotNull(message = "Type is required", groups = { OnCreate.class }) BankAccountType type,
         @NotNull(message = "Description is required", groups = {
                 OnCreate.class }) @NotBlank(message = "Description cannot be blank", groups = { OnCreate.class,
-                        OnUpdate.class }) String description) {
+                        OnUpdate.class }) String description,
+        @NotNull(message = "Initial balance is required", groups = { OnCreate.class }) Long initialBalance) {
     public BankAccount toEntity(User user) {
-        return new BankAccount(type, description, user);
+        return new BankAccount(type, description, user, initialBalance);
     }
 }
