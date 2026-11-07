@@ -1,4 +1,4 @@
-﻿package com.pedro.budget.dto;
+package com.pedro.budget.dto;
 
 import java.util.UUID;
 
