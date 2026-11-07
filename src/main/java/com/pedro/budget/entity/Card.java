@@ -45,4 +45,23 @@ public class Card {
         this.dueDay = dueDay;
         this.closingDay = closingDay;
     }
+
+    public void update(String description, String cardNumber, BankAccount bankAccount, Integer dueDay,
+            Integer closingDay) {
+        if (description != null && !description.isBlank()) {
+            this.description = description;
+        }
+        if (cardNumber != null && !cardNumber.isBlank()) {
+            this.cardNumber = cardNumber;
+        }
+        if (bankAccount != null) {
+            this.bankAccount = bankAccount;
+        }
+        if (dueDay != null) {
+            this.dueDay = dueDay;
+        }
+        if (closingDay != null) {
+            this.closingDay = closingDay;
+        }
+    }
 }
