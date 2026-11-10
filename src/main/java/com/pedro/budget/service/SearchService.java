@@ -8,6 +8,7 @@ import com.pedro.budget.entity.Card;
 import com.pedro.budget.entity.Person;
 import com.pedro.budget.entity.Transaction.Transaction;
 import com.pedro.budget.entity.User;
+import com.pedro.budget.enums.BankAccountType;
 import com.pedro.budget.enums.SearchItemType;
 import com.pedro.budget.repository.BankAccountRepository;
 import com.pedro.budget.repository.CardRepository;
@@ -39,7 +40,7 @@ public class SearchService {
         List<RankedSearchItem> transactionItens = fromTransaction(transactionRepository.search(user.getId(), query), query);
         List<RankedSearchItem> personItens = fromPerson(personRepository.search(user.getId(), query), query);
         List<RankedSearchItem> cardItens = fromCard(cardRepository.search(user.getId(), query), query);
-        List<RankedSearchItem> bankAccountItens = fromBank(bankAccountRepository.search(user.getId(), query), query);
+        List<RankedSearchItem> bankAccountItens = fromBank(bankAccountRepository.search(user.getId(), query, BankAccountType.matchingTypes(query)), query);
 
 
         List<RankedSearchItem> items = new ArrayList<>();

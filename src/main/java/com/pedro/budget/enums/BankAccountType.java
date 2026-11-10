@@ -1,4 +1,7 @@
-package com.pedro.budget.entity;
+package com.pedro.budget.enums;
+
+import java.util.Arrays;
+import java.util.List;
 
 public enum BankAccountType {
 
@@ -42,5 +45,13 @@ public enum BankAccountType {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public static List<BankAccountType> matchingTypes(String q) {
+        String lower = q.toLowerCase();
+        return Arrays.stream(values())
+                .filter(t -> t.displayName.toLowerCase().contains(lower)
+                        || t.name().toLowerCase().contains(lower))
+                .toList();
     }
 }
