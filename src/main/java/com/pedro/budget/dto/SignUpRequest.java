@@ -1,7 +1,7 @@
 package com.pedro.budget.dto;
 
 import com.pedro.budget.entity.User;
-import com.pedro.budget.entity.UserRole;
+import com.pedro.budget.enums.UserRole;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

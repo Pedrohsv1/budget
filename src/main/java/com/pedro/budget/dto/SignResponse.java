@@ -1,6 +1,6 @@
 package com.pedro.budget.dto;
 
-import com.pedro.budget.entity.UserRole;
+import com.pedro.budget.enums.UserRole;
 
 public record SignResponse(String token, String username, UserRole role) {
     public static SignResponse from(String token, String username, UserRole role) {

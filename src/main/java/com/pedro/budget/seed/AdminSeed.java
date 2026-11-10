@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.pedro.budget.dto.SignUpRequest;
 import com.pedro.budget.entity.User;
-import com.pedro.budget.entity.UserRole;
+import com.pedro.budget.enums.UserRole;
 import com.pedro.budget.repository.UserRepository;
 
 @Component
