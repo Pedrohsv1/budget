@@ -4,6 +4,5 @@ public enum SearchItemType {
     TRANSACTION,
     BANK_ACCOUNT,
     CARD,
-    CATEGORY,
     PERSON
 }

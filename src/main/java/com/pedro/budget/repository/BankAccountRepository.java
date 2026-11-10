@@ -21,8 +21,8 @@ public interface BankAccountRepository extends JpaRepository<BankAccount, UUID> 
     @Query("""
         select b from BankAccount b
             where b.user.id = :userId
-                and (lower(b.description) like lower(concat("%", :q, "%"))
-                    or (lower(b.type) like lower(concat("%", :q, "%"))))
+                and (lower(b.description) like lower(concat('%', :q, '%'))
+                    or (lower(b.type) like lower(concat('%', :q, '%'))))
     """)
     List<BankAccount> search(@Param("userId") UUID userId, @Param("q") String q);
 }

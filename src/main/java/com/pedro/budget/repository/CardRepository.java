@@ -20,8 +20,8 @@ public interface CardRepository extends JpaRepository<Card, UUID> {
     @Query("""
     select c from Card c
         where c.user.id = :userId
-            and (lower(c.description) like lower(concat("%", :q ,"%"))
-                or (c.cardNumber like lower(concat("%", :q ,"%"))))
+            and (lower(c.description) like lower(concat('%', :q ,'%'))
+                or (c.cardNumber like lower(concat('%', :q ,'%'))))
     """)
     List<Card> search(@Param("userId") UUID userId, @Param("q") String q);
 }

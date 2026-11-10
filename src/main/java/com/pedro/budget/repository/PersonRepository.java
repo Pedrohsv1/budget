@@ -22,8 +22,8 @@ public interface PersonRepository extends JpaRepository<Person, UUID> {
     @Query("""
         select p from Person p
             where p.user.id = :userId
-                and (lower(p.name) like lower(concat("%", :q, "%"))
-                    or (lower(p.email) like lower(concat("%", :q, "%"))))
+                and (lower(p.name) like lower(concat('%', :q, '%'))
+                    or (lower(p.email) like lower(concat('%', :q, '%'))))
     """)
     List<Person> search(@Param("userId") UUID userId, @Param("q") String q);
 }

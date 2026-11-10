@@ -65,9 +65,8 @@ public class SearchService {
         if (base == 0) return 0;
 
         int weight = switch (type) {
-            case TRANSACTION  -> 5;
-            case PERSON       -> 4;
-            case CATEGORY     -> 3;
+            case TRANSACTION  -> 4;
+            case PERSON       -> 3;
             case BANK_ACCOUNT -> 2;
             case CARD         -> 1;
         };
@@ -126,11 +125,11 @@ public class SearchService {
     private List<RankedSearchItem> fromCard(List<Card> search, String q) {
         return search.stream().map(item -> new RankedSearchItem( new SearchItem(
                 item.getId(),
-                SearchItemType.PERSON,
+                SearchItemType.CARD,
                 item.getCardNumber(),
                 item.getDescription()
         ), calculateScore(
-                SearchItemType.PERSON,
+                SearchItemType.CARD,
                 item.getCardNumber(),
                 item.getDescription(),
                 q)
@@ -140,11 +139,11 @@ public class SearchService {
     private List<RankedSearchItem> fromBank(List<BankAccount> search, String q) {
         return search.stream().map(item -> new RankedSearchItem( new SearchItem(
                 item.getId(),
-                SearchItemType.PERSON,
+                SearchItemType.BANK_ACCOUNT,
                 item.getType().getDisplayName(),
                 item.getDescription()
         ), calculateScore(
-                SearchItemType.PERSON,
+                SearchItemType.BANK_ACCOUNT,
                 item.getType().getDisplayName(),
                 item.getDescription(),
                 q)
