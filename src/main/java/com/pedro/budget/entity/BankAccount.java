@@ -2,6 +2,7 @@ package com.pedro.budget.entity;
 
 import java.util.UUID;
 
+import com.pedro.budget.enums.BankAccountType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

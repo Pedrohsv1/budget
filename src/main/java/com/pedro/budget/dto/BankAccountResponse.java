@@ -3,7 +3,7 @@ package com.pedro.budget.dto;
 import java.util.UUID;
 
 import com.pedro.budget.entity.BankAccount;
-import com.pedro.budget.entity.BankAccountType;
+import com.pedro.budget.enums.BankAccountType;
 
 public record BankAccountResponse(
         UUID id,

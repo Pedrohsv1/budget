@@ -3,7 +3,7 @@ package com.pedro.budget.dto;
 import com.pedro.budget.dto.validation.OnCreate;
 import com.pedro.budget.dto.validation.OnUpdate;
 import com.pedro.budget.entity.BankAccount;
-import com.pedro.budget.entity.BankAccountType;
+import com.pedro.budget.enums.BankAccountType;
 import com.pedro.budget.entity.User;
 
 import jakarta.validation.constraints.NotNull;

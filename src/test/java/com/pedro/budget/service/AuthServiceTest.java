@@ -20,7 +20,7 @@ import com.pedro.budget.dto.SignInRequest;
 import com.pedro.budget.dto.SignResponse;
 import com.pedro.budget.dto.SignUpRequest;
 import com.pedro.budget.entity.User;
-import com.pedro.budget.entity.UserRole;
+import com.pedro.budget.enums.UserRole;
 import com.pedro.budget.repository.CategoryRepository;
 import com.pedro.budget.repository.PersonRepository;
 import com.pedro.budget.repository.UserRepository;
