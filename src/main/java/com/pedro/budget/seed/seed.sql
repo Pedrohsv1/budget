@@ -18,21 +18,22 @@ v_user_id            UUID;
     v_tx_id              UUID;
 BEGIN
     -- 1. Create (or reuse) test user: username = 'test_user', password = 'Senha@2026'
-SELECT id INTO v_user_id
-FROM users
-WHERE username = 'test_user'
+    SELECT id INTO v_user_id
+    FROM users
+    WHERE username = 'test_user'
     LIMIT 1;
-
-IF v_user_id IS NULL THEN
-        INSERT INTO users (id, username, password, role)
-        VALUES (
-            gen_random_uuid(),
-            'test_user',
-            crypt('Senha@2026', gen_salt('bf', 10)),
-            'USER'
-        )
-        RETURNING id INTO v_user_id;
-END IF;
+    IF v_user_id IS NOT NULL THEN
+        RAISE NOTICE 'test_user already exists; skipping seed.';
+        RETURN;
+    END IF;
+    INSERT INTO users (id, username, password, role)
+    VALUES (
+               gen_random_uuid(),
+               'test_user',
+               crypt('Senha@2026', gen_salt('bf', 10)),
+               'USER'
+           )
+    RETURNING id INTO v_user_id;
 
     -- 2. Categories
 INSERT INTO categories (id, title, type, user_id)

@@ -75,19 +75,19 @@ public class SearchService {
     }
 
     private int textScore(String title, String subtitle, String q) {
-        if(title.toLowerCase().equals(q)) {
+        if(title != null && title.toLowerCase().equals(q)) {
             return 100;
         }
 
-        if(title.toLowerCase().contains(q)) {
+        if(title != null && title.toLowerCase().contains(q)) {
             return 50;
         }
 
-        if(subtitle.toLowerCase().equals(q)) {
+        if(subtitle != null && subtitle.toLowerCase().equals(q)) {
             return 30;
         }
 
-        if(subtitle.toLowerCase().contains(q)) {
+        if(subtitle != null && subtitle.toLowerCase().contains(q)) {
             return 20;
         }
 
