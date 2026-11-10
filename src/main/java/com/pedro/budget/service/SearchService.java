@@ -138,16 +138,26 @@ public class SearchService {
     }
 
     private List<RankedSearchItem> fromBank(List<BankAccount> search, String q) {
-        return search.stream().map(item -> new RankedSearchItem( new SearchItem(
+
+
+        return search.stream().map(item -> {
+            int scoreDisplayName = calculateScore(
+                    SearchItemType.BANK_ACCOUNT,
+                    item.getType().getDisplayName(),
+                    item.getDescription(),
+                    q);
+            int scoreName = calculateScore(
+                    SearchItemType.BANK_ACCOUNT,
+                    item.getType().name(),
+                    item.getDescription(),
+                    q);
+
+            return new RankedSearchItem( new SearchItem(
                 item.getId(),
                 SearchItemType.BANK_ACCOUNT,
                 item.getType().getDisplayName(),
                 item.getDescription()
-        ), calculateScore(
-                SearchItemType.BANK_ACCOUNT,
-                item.getType().getDisplayName(),
-                item.getDescription(),
-                q)
-        )).toList();
+            ), Math.max(scoreDisplayName, scoreName)
+        ); }).toList();
     }
 }
