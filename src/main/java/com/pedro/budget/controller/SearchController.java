@@ -22,7 +22,7 @@ public class SearchController {
     private final SearchService searchService;
 
     @GetMapping()
-    public ResponseEntity<GlobalSearchResponse> search(@RequestParam @Size(min = 2) String q, @AuthenticationPrincipal User user) {
+    public ResponseEntity<GlobalSearchResponse> search(@RequestParam String q, @AuthenticationPrincipal User user) {
         return ResponseEntity.status(HttpStatus.OK).body(searchService.GlobalSearch(user, q));
     }
 }

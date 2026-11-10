@@ -31,11 +31,11 @@ public class SearchService {
 
 
     public GlobalSearchResponse GlobalSearch(User user, String q) {
-        if (q.isBlank()) {
+        String query = q.trim().toLowerCase();
+
+        if (query.length() < 2) {
             return new GlobalSearchResponse(List.of());
         }
-
-        String query = q.trim().toLowerCase();
 
         List<RankedSearchItem> transactionItens = fromTransaction(transactionRepository.search(user.getId(), query), query);
         List<RankedSearchItem> personItens = fromPerson(personRepository.search(user.getId(), query), query);
