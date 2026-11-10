@@ -16,6 +16,7 @@ v_user_id            UUID;
     v_card_itau_id       UUID;
     v_credit_purchase_id UUID;
     v_tx_id              UUID;
+    i                    INTEGER;
 BEGIN
     -- 1. Create (or reuse) test user: username = 'test_user', password = 'Senha@2026'
 SELECT id INTO v_user_id
