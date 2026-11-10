@@ -39,7 +39,11 @@ public class SearchService {
         List<RankedSearchItem> transactionItens = fromTransaction(transactionRepository.search(user.getId(), query), query);
         List<RankedSearchItem> personItens = fromPerson(personRepository.search(user.getId(), query), query);
         List<RankedSearchItem> cardItens = fromCard(cardRepository.search(user.getId(), query), query);
-        List<RankedSearchItem> bankAccountItens = fromBank(bankAccountRepository.search(user.getId(), query), query);
+        String normalizedBankTypeQuery = normalizeBankTypeQuery(query);
+        List<RankedSearchItem> bankAccountItens = fromBank(
+                bankAccountRepository.search(user.getId(), query, normalizedBankTypeQuery),
+                query
+        );
 
 
         List<RankedSearchItem> items = new ArrayList<>();
@@ -145,9 +149,13 @@ public class SearchService {
                 item.getDescription()
         ), calculateScore(
                 SearchItemType.PERSON,
-                item.getType().getDisplayName(),
+                item.getType().name().toLowerCase(),
                 item.getDescription(),
                 q)
         )).toList();
+    }
+
+    private String normalizeBankTypeQuery(String q) {
+        return q.replace(' ', '_');
     }
 }
