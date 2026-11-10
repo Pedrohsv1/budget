@@ -118,7 +118,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"type\": \"NUBANK\",\r\n  \"description\": \"Conta Nubank Principal\"\r\n}",
+              "raw": "{\r\n  \"type\": \"NUBANK\",\r\n  \"description\": \"Conta Nubank Principal\",\r\n  \"initialBalance\": 100000\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -192,7 +192,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"type\": \"ITAU\",\r\n  \"description\": \"Conta Itaú Atualizada\"\r\n}",
+              "raw": "{\r\n  \"type\": \"ITAU\",\r\n  \"description\": \"Conta Itaú Atualizada\",\r\n  \"initialBalance\": 150000\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -461,12 +461,244 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{BASE_URL}}/persons",
+              "raw": "{{BASE_URL}}/persons?page=0&size=20",
               "host": [
                 "{{BASE_URL}}"
               ],
               "path": [
                 "persons"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update person",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Pedro Atualizado\",\r\n  \"email\": \"pedro.atualizado@example.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/persons/{{person_id}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "persons",
+                "{{person_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete person",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/persons/{{person_id}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "persons",
+                "{{person_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cards",
+      "item": [
+        {
+          "name": "create card",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var res = pm.response.json();\r",
+                  "if(res.id != null){\r",
+                  "    pm.environment.set(\"card_id\", res.id);\r",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"description\": \"Cartão Nubank Platinum\",\r\n  \"cardNumber\": \"1234\",\r\n  \"dueDay\": 10,\r\n  \"closingDay\": 3,\r\n  \"bankAccountId\": \"{{bank_account_id}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/cards",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "cards"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "list cards",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/cards?page=0&size=20",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "cards"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update card",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"description\": \"Cartão Nubank Ultravioleta\",\r\n  \"cardNumber\": \"5678\",\r\n  \"dueDay\": 15,\r\n  \"closingDay\": 8,\r\n  \"bankAccountId\": \"{{bank_account_id}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/cards/{{card_id}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "cards",
+                "{{card_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete card",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/cards/{{card_id}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "cards",
+                "{{card_id}}"
               ]
             }
           },
@@ -505,7 +737,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"amount\": 15200,\r\n  \"description\": \"Tênis Nike Traineer\",\r\n  \"date\": \"2026-10-25\",\r\n  \"categoryId\": \"{{category_id}}\",\r\n  \"bankAccountId\": \"{{bank_account_id}}\",\r\n  \"type\": \"EXPENSE\",\r\n  \"expenseType\": \"PIX\"\r\n}",
+              "raw": "{\r\n  \"amount\": 15200,\r\n  \"description\": \"Tênis Nike Traineer\",\r\n  \"date\": \"2026-10-25\",\r\n  \"categoryId\": \"{{category_id}}\",\r\n  \"bankAccountId\": \"{{bank_account_id}}\",\r\n  \"personId\": \"{{person_id}}\",\r\n  \"type\": \"EXPENSE\",\r\n  \"expenseType\": \"PIX\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -552,7 +784,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"amount\": 500000,\r\n  \"description\": \"Salário Mensal\",\r\n  \"date\": \"2026-10-25\",\r\n  \"categoryId\": \"{{category_id}}\",\r\n  \"bankAccountId\": \"{{bank_account_id}}\",\r\n  \"type\": \"INCOME\",\r\n  \"incomeType\": \"TED\"\r\n}",
+              "raw": "{\r\n  \"amount\": 500000,\r\n  \"description\": \"Salário Mensal\",\r\n  \"date\": \"2026-10-25\",\r\n  \"categoryId\": \"{{category_id}}\",\r\n  \"bankAccountId\": \"{{bank_account_id}}\",\r\n  \"personId\": \"{{person_id}}\",\r\n  \"type\": \"INCOME\",\r\n  \"incomeType\": \"TED\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -599,7 +831,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"amount\": 120000,\r\n  \"description\": \"Compra Notebook\",\r\n  \"date\": \"2026-10-25\",\r\n  \"categoryId\": \"{{category_id}}\",\r\n  \"bankAccountId\": \"{{bank_account_id}}\",\r\n  \"type\": \"CREDIT_EXPENSE\",\r\n  \"installmentNumber\": 1,\r\n  \"installmentTotal\": 6,\r\n  \"cardId\": \"00000000-0000-0000-0000-000000000000\"\r\n}",
+              "raw": "{\r\n  \"amount\": 120000,\r\n  \"description\": \"Compra Notebook\",\r\n  \"date\": \"2026-10-25\",\r\n  \"categoryId\": \"{{category_id}}\",\r\n  \"bankAccountId\": \"{{bank_account_id}}\",\r\n  \"personId\": \"{{person_id}}\",\r\n  \"type\": \"CREDIT_EXPENSE\",\r\n  \"installmentNumber\": 1,\r\n  \"installmentTotal\": 6,\r\n  \"cardId\": \"{{card_id}}\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -678,6 +910,176 @@
               "path": [
                 "transactions",
                 "{{transaction_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "item": [
+        {
+          "name": "global search",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/search?q=nubank",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "nubank"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "global search (by transaction amount)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/search?q=15200",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "15200"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "global search (by person)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/search?q=maria",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "maria"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "global search (by card number)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/search?q=4321",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "4321"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "global search (blank query)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/search?q=",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": ""
+                }
               ]
             }
           },
