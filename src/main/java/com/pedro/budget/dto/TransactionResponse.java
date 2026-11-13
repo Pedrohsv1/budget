@@ -3,6 +3,7 @@ package com.pedro.budget.dto;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import com.pedro.budget.entity.Person;
 import com.pedro.budget.entity.Transaction.Transaction;
 import com.pedro.budget.entity.Transaction.TransactionCredit;
 import com.pedro.budget.entity.Transaction.TransactionExpense;
@@ -24,6 +25,7 @@ public record TransactionResponse(
         ExpenseType expenseType,
         CreditPurchaseSummaryResponse creditPurchase,
         BankAccountResponse bankAccount,
+        PersonResponse person,
         TransactionType type) {
     public static TransactionResponse from(Transaction t) {
         TransactionResponse.TransactionResponseBuilder builder = TransactionResponse.builder()
@@ -33,7 +35,8 @@ public record TransactionResponse(
                 .date(t.getDate())
                 .category(CategoryResponse.from(t.getCategory()))
                 .type(t.getTransactionType())
-                .bankAccount(BankAccountResponse.from(t.getBankAccount()));
+                .bankAccount(BankAccountResponse.from(t.getBankAccount()))
+                .person(PersonResponse.from(t.getPerson()));
 
         return switch (t) {
             case TransactionIncome income -> builder

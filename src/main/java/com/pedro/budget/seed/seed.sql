@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 DO $$
 DECLARE
-v_user_id            UUID;
+    v_user_id            UUID;
     v_cat_food_id        UUID;
     v_cat_shopping_id    UUID;
     v_cat_income_id      UUID;

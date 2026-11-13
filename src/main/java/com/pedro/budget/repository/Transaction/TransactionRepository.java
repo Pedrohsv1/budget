@@ -4,16 +4,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import aj.org.objectweb.asm.commons.Remapper;
+import com.pedro.budget.dto.SearchTransactionsParams;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.pedro.budget.entity.Transaction.Transaction;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
+public interface TransactionRepository extends JpaRepository<Transaction, UUID>, JpaSpecificationExecutor<Transaction> {
     List<Transaction> findAllByUserId(UUID userId);
 
     @EntityGraph(attributePaths = { "category", "bankAccount", "person" }) // Create a joined fetch query
@@ -29,4 +34,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     """)
     @EntityGraph(attributePaths = { "category", "bankAccount", "person" })
     List<Transaction> search(@Param("userId") UUID userId, @Param("q") String q);
+
+    @EntityGraph(attributePaths = { "category", "bankAccount", "person" })
+    @Override
+    @NullMarked
+    Page<Transaction> findAll(Specification<Transaction> spec, Pageable pageable);
 }
