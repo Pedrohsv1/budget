@@ -6,8 +6,10 @@ import java.util.UUID;
 
 import aj.org.objectweb.asm.commons.Remapper;
 import com.pedro.budget.dto.SearchTransactionsParams;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -32,4 +34,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID>,
     """)
     @EntityGraph(attributePaths = { "category", "bankAccount", "person" })
     List<Transaction> search(@Param("userId") UUID userId, @Param("q") String q);
+
+    @EntityGraph(attributePaths = { "category", "bankAccount", "person" })
+    @Override
+    @NullMarked
+    Page<Transaction> findAll(Specification<Transaction> spec, Pageable pageable);
 }
