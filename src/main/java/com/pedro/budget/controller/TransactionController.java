@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -44,11 +45,19 @@ public class TransactionController {
     @GetMapping()
     public ResponseEntity<Page<TransactionResponse>> listTransactions(
             @AuthenticationPrincipal User user,
-            @PageableDefault(page = 0, size = 20, sort = "date", direction = Sort.Direction.ASC) Pageable pageable,
+            @PageableDefault(page = 0, size = 20, sort = {"date"}, direction = Sort.Direction.ASC) Pageable pageable,
             SearchTransactionsParams params)
     {
+        Sort fixedIdSort = pageable.getSort().and(Sort.by(Sort.Direction.ASC, "id"));
+
+        Pageable pageableSorted = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                fixedIdSort
+        );
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(transactionService.listTransactions(user, pageable, params));
+                .body(transactionService.listTransactions(user, pageableSorted, params));
     }
 
     @DeleteMapping("/{id}")
