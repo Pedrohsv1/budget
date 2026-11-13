@@ -4,8 +4,10 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.pedro.budget.dto.SearchTransactionsParams;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,8 +73,13 @@ public class TransactionService {
         }
     }
 
-    public Page<TransactionResponse> listTransactions(User user, Pageable pageable) {
-        Page<TransactionResponse> page = transactionRepository.findAllByUserId(user.getId(), pageable)
+    public Page<TransactionResponse> listTransactions(User user, Pageable pageable, SearchTransactionsParams params) {
+        Specification<Transaction> byUser = (root, query, cb) ->
+                cb.equal(root.get("user").get("id"), user.getId());
+
+        Specification<Transaction> specification = byUser.and(params);
+
+        Page<TransactionResponse> page = transactionRepository.findAll(specification, pageable)
                 .map(TransactionResponse::from);
         return page;
     }
